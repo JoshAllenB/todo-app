@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
+
+body {
+  font-family: 'Ubuntu', sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  height: 6%;
+  width: 100%;
+  color: white;
+  background-color: black;
+}
+
+h1 {
+  margin: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(255, 255, 255);
+}
+
+.sideMenu {
+  width: 15%;
+  display: flex;
+  flex-direction: column;
+
+  background-color: rgb(0, 0, 0);
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  
+  width: 80%;
+  margin: 5%;
+  margin-top: 10%;
+  padding: 0;
+  list-style: none;
+  color: #fff;
+  backface-visibility: hidden;
+  border: 0.3rem solid transparent;
+  border-radius: 3rem;
+}
+
+.home h1 {
+  margin-bottom: 5%;
+  border-bottom: 3px solid #ffffff;
+}
+
+.home button {
+  text-align: start;
+  border: none;
+  background: none;
+  font-size: 25px;
+  margin: 10px;
+  height: 20%;
+  width: 60%;
+  cursor: pointer;
+  color: #fff;
+  border-color: transparent;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.home button:hover {
+  color: black;
+  background-color: #ffffff;
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+  
+  width: 80%;
+  margin: 5%;
+  margin-top: 10%;
+  padding: 0;
+  list-style: none;
+  color: #fff;
+  backface-visibility: hidden;
+  border: 0.3rem solid transparent;
+  border-radius: 3rem;
+}
+
+.project h1 {
+  margin-bottom: 5%;
+  border-bottom: 3px solid #ffffff;
+}
+
+.project button {
+  text-align: start;
+  border: none;
+  background: none;
+  font-size: 25px;
+  margin: 10px;
+  height: 30%;
+  width: 60%;
+  cursor: pointer;
+  color: #fff;
+  border-color: transparent;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.project button:hover {
+  color: black;
+  background-color: #ffffff;
+}
+
+
+footer {
+  background-color: black;
+  color: white;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+footer h1 {
+  font-size: 1.5rem;
+}
