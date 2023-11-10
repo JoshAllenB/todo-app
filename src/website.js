@@ -1,3 +1,6 @@
+import { initHandler } from "./handler";
+
+
 function createHeader(){
   const header = document.createElement('header');
   const title = document.createElement('h1');
@@ -12,7 +15,7 @@ function createFooter() {
   const footerLink = document.createElement('div');
   footerLink.classList.add('link');
 
-  const copyright = createFooterLink ('<i class="fa-regular fa-copyright"></i> To-Do App');
+  const copyright = createFooterLink('Copyright <i class="fa-regular fa-copyright"></i> JoshAllen');
   footerLink.appendChild(copyright);
   footer.appendChild(footerLink);
   document.body.appendChild(footer);
@@ -24,53 +27,50 @@ function createFooterLink(text) {
   return link;
 }
 
-function createSideMenu() { 
+function createContent() {
   const content = document.createElement('div');
   content.classList.add('content');
+  content.setAttribute('id', 'mainContent');
+  return content;
+}
 
+function createSideMenu() {
+  const content = createContent(); // Create content element
   const sideMenu = document.createElement('div');
   sideMenu.classList.add('sideMenu');
+
+  function createButton(text, id) {
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.id = id;
+    return button;
+  }
+
   const home = document.createElement('div');
   home.classList.add('home');
-  const homeTitle = document.createElement('h1');
-  homeTitle.textContent = 'Home';
-
-  const allTasks = document.createElement('button');
-  allTasks.textContent = 'All Tasks';
-  const today = document.createElement('button');
-  today.textContent = 'Today';
-  const thisWeek = document.createElement('button');
-  thisWeek.textContent = 'This Week';
-  const important = document.createElement('button');
-  important.textContent = 'Important';
-
-  home.appendChild(homeTitle);
-  home.appendChild(allTasks);
-  home.appendChild(today);
-  home.appendChild(thisWeek);
-  home.appendChild(important);
+  home.innerHTML = '<h1>Home</h1>';
+  home.appendChild(createButton('Inbox', 'inbox'));
+  home.appendChild(createButton('Today', 'today'));
+  home.appendChild(createButton('This Week', 'this-week'));
+  home.appendChild(createButton('Important', 'important'));
 
   const project = document.createElement('div');
   project.classList.add('project');
-  const projectTitle = document.createElement('h1');
-  projectTitle.textContent = 'Project';
-  const add = document.createElement('button');
-  add.textContent = '+'
-
-  project.appendChild(projectTitle);
-  project.appendChild(add);
+  project.innerHTML = '<h1>Project</h1>';
+  project.appendChild(createButton('+ Add Project', 'add-project'));
 
   sideMenu.appendChild(home);
-  sideMenu.appendChild(project)
-  content.appendChild(sideMenu);
-  document.body.appendChild(content);
+  sideMenu.appendChild(project);
+  content.appendChild(sideMenu); // Append sideMenu to content
+  document.body.appendChild(content); // Append content to the body
 }
 
-function initWebsite(){
+
+function initWebsite() {
   createHeader();
   createSideMenu();
+  initHandler();
   createFooter();
 }
 
-
-export {initWebsite};
+export { initWebsite, createContent };
