@@ -1,5 +1,6 @@
 import { initHandler } from "./handler";
-
+import { inboxHandler } from "./handler";
+import { createModal } from "./modal";
 
 function createHeader(){
   const header = document.createElement('header');
@@ -27,10 +28,17 @@ function createFooterLink(text) {
   return link;
 }
 
+let content;
+
 function createContent() {
-  const content = document.createElement('div');
-  content.classList.add('content');
-  content.setAttribute('id', 'mainContent');
+  if (!content) {
+    content = document.createElement('div');
+    content.classList.add('content');
+    content.setAttribute('id', 'mainContent');
+
+    // const modal = createModal();
+    // content.appendChild(modal);
+  }
   return content;
 }
 
@@ -49,7 +57,8 @@ function createSideMenu() {
   const home = document.createElement('div');
   home.classList.add('home');
   home.innerHTML = '<h1>Home</h1>';
-  home.appendChild(createButton('Inbox', 'inbox'));
+  const inboxBtn = createButton('Inbox', 'inbox');
+  home.appendChild(inboxBtn);
   home.appendChild(createButton('Today', 'today'));
   home.appendChild(createButton('This Week', 'this-week'));
   home.appendChild(createButton('Important', 'important'));
@@ -63,12 +72,27 @@ function createSideMenu() {
   sideMenu.appendChild(project);
   content.appendChild(sideMenu); // Append sideMenu to content
   document.body.appendChild(content); // Append content to the body
+
+  inboxHandler();
 }
 
+function createTodoList() {
+  const content = createContent();
+  const list = document.createElement('div');
+  list.classList.add('todoList');
+
+  const todoBtn = document.createElement('button');
+  todoBtn.classList.add('todoBtn');
+  todoBtn.textContent = 'Add To-Do List';
+
+  list.appendChild(todoBtn);
+  content.appendChild(list);
+}
 
 function initWebsite() {
   createHeader();
   createSideMenu();
+  createTodoList();
   initHandler();
   createFooter();
 }
