@@ -12,14 +12,11 @@ function createModal() {
   closeBtn.classList.add('close');
   closeBtn.innerHTML = '&times;';
 
-  const nameLabel = createLabel('Name:', 'todoName');
+  const nameLabel = createLabel('Task Name:', 'todoName');
   const nameInput = createInput('text', 'todoName', true);
 
   const dateLabel = createLabel('Date:', 'todoDate');
   const dateInput = createInput('date', 'todoDate', true);
-
-  const importanceLabel = createLabel('Importance:', 'todoImportance');
-  const importanceInput = createInput('text', 'todoImportance', true);
 
   const submitBtn = document.createElement('button');
   submitBtn.id = 'submitTodo';
@@ -30,13 +27,9 @@ function createModal() {
   modalContent.appendChild(nameInput);
   modalContent.appendChild(dateLabel);
   modalContent.appendChild(dateInput);
-  modalContent.appendChild(importanceLabel);
-  modalContent.appendChild(importanceInput);
   modalContent.appendChild(submitBtn);
 
   modal.appendChild(modalContent);
-
-  document.body.appendChild(modal);
 
   return modal;
 }

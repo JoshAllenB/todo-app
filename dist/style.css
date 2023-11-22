@@ -15,7 +15,7 @@ header {
   align-items: center;
   margin: 0;
   padding: 0;
-  height: 5%;
+  height: 8%;
   width: 100%;
   color: white;
   background-color: black;
@@ -23,7 +23,7 @@ header {
 
 header h1 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 3rem;
 }
 
 button.active {
@@ -49,9 +49,10 @@ button.active {
 
 .todoBtn {
   position: absolute;
-  margin-top: 2%;
+  margin-top: 6%;
   height: 7%;
   width: 15%;
+  left: 43%;
 
   font-family: "Poppins", sans-serif;
   font-size: 1rem;
@@ -68,10 +69,35 @@ button.active {
   color: #000;
   transition: transform 0.2s cubic-bezier(0.235, 0, 0.05, 0.95);
   box-shadow: rgb(0, 0, 0) 0px 20px 30px -10px;
+  animation: todoBtnbouncy 10s ease infinite;
 }
 
 .todoBtn:hover {
   transform: perspective(1px) scale3d(1.044, 1.044, 1) translateZ(0) !important;
+}
+
+@keyframes todoBtnbouncy {
+  0% {
+    top: 0em;
+  }
+  40% {
+    top: 0em;
+  }
+  43% {
+    top: -0.9em;
+  }
+  46% {
+    top: 0em;
+  }
+  48% {
+    top: -0.4em;
+  }
+  50% {
+    top: 0em;
+  }
+  100% {
+    top: 0em;
+  }
 }
 
 .sideMenu {
@@ -168,6 +194,62 @@ button.active {
   background-color: #ffffff;
 }
 
+.modal {
+  height: 50%;
+  width: 30%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Style for the modal content */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+  height: 70%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+/* Style for the close button */
+.close {
+  float: right;
+  font-size: 25px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Style for the form elements within the modal */
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+#submitTodo {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+/* Style for the submit button */
+#submitTodo:hover {
+  background-color: #45a049;
+}
 
 footer {
   background-color: black;

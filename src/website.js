@@ -36,8 +36,6 @@ function createContent() {
     content.classList.add('content');
     content.setAttribute('id', 'mainContent');
 
-    // const modal = createModal();
-    // content.appendChild(modal);
   }
   return content;
 }
@@ -61,7 +59,6 @@ function createSideMenu() {
   home.appendChild(inboxBtn);
   home.appendChild(createButton('Today', 'today'));
   home.appendChild(createButton('This Week', 'this-week'));
-  home.appendChild(createButton('Important', 'important'));
 
   const project = document.createElement('div');
   project.classList.add('project');
