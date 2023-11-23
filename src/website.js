@@ -1,6 +1,5 @@
 import { initHandler } from "./handler";
 import { inboxHandler } from "./handler";
-import { createModal } from "./modal";
 
 function createHeader(){
   const header = document.createElement('header');
