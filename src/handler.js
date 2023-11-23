@@ -42,6 +42,7 @@ function inboxHandler() {
       const modal = createModal();
       content.appendChild(modal);
       closeModal(modal); // Add event listener after appending the modal
+      submitTodo();
     });
   }
 }
@@ -59,10 +60,37 @@ function closeModal(modal) {
   }
 }
 
+function submitTodo() {
+  const submitBtn = document.getElementById('submitTodo');
+  const modal = document.getElementById('todoModal');
+  const todoList = document.querySelector('.todoList');
+
+  if (submitBtn && modal && todoList) {
+    submitBtn.addEventListener('click', function() {
+      // Get values from the modal inputs
+      const todoName = document.getElementById('todoName').value;
+      const todoDate = document.getElementById('todoDate').value;
+
+      // Create a new div to represent the todo item
+      const todoItem = document.createElement('div');
+      todoItem.classList.add('todo-item');
+      todoItem.innerHTML = `<h3>${todoName}</h3><p>${todoDate}</p>`;
+
+      // Append the todo item to the todoList div
+      todoList.appendChild(todoItem);
+
+      // Hide and remove the modal
+      modal.style.display = 'none';
+      modal.remove();
+    });
+  }
+}
+
 function initHandler() {
   activeBtn();
   inboxHandler();
   closeModal();
+  submitTodo();
 }
 
 export { initHandler, inboxHandler };
