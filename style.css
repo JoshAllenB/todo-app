@@ -23,9 +23,10 @@ header {
 
 header h1 {
   margin: 0;
-  margin-left: 0.6%;
+  margin-left: 1%;
   font-size: 3rem;
 }
+
 
 button.active {
   color: black;
@@ -101,8 +102,50 @@ button.active {
   }
 }
 
+.todo-item-wrapper {
+  margin-top: 1%;
+  width: 60%;
+}
+
+.todo-item {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 45%;
+}
+
+.todo-item:hover {
+  border-radius: 100px;
+  background-color: #cecece4d;
+}
+
+.todo-item input {
+  cursor: pointer;
+  margin: 0;
+  height: 25px;
+  width: 25px;
+}
+
+.checkmark {
+  height: 25px;
+  width: 25px;
+  background-color: #c9c9c9;
+  margin-right: 2%;
+  border-radius: 50%;
+}
+
+.checkmark:hover {
+  background-color: #4CAF50;
+}
+
+.todo-item h3{
+  margin-right: 30%;
+}
+
+
 .sideMenu {
-  width: 15%;
+  width: 17%;
   display: flex;
   flex-direction: column;
   background-color: rgb(0, 0, 0);
@@ -171,7 +214,7 @@ button.active {
   border-bottom: 3px solid #ffffff;
 }
 
-.project button {
+#add-project{
   text-align: start;
   border: none;
   background: none;
@@ -185,19 +228,137 @@ button.active {
   transition: background-color 0.2s ease-in-out;
 }
 
-.project button:hover {
+#add-project:hover {
   color: black;
   background-color: #ffffff;
 }
 
-.project button.active {
+#add-project.active {
   color: black;
   background-color: #ffffff;
+}
+
+.project-item {
+  width: 100%;
+  height: 30%;
+  margin-top: 1%;
+  font-size: 1.5rem;
+  font-weight: 500;
+
+  display: flex;
+}
+
+.project-item span {
+  width: 100%;
+  margin: 5%;
+
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  cursor: pointer;
+  color: #fff;
+  border-color: transparent;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.project-item span:hover {
+  color: black;
+  background-color: #ffffff;
+}
+
+.project-item span.active {
+  color: black;
+  background-color: #ffffff;
+}
+
+.submit-btn {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  margin-right: 4%;
+  margin-bottom: 4%;
+  height: 30%;
+  width: 50%;
+  text-align:center;
+  border: none;
+  background-size: 300% 100%;
+  border-radius: 10px;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+  background-image: linear-gradient(
+    to right,
+    #0ba360,
+    #3cba92,
+    #30dd8a,
+    #2bb673
+  );
+}
+
+.submit-btn:hover {
+  background-position: 100% 0;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.submit-btn:focus {
+  outline: none;
+}
+
+.cancel-btn {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  height: 30%;
+  width: 50%;
+  text-align:center;
+  border: none;
+  background-size: 300% 100%;
+  border-radius: 10px;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+  background-image: linear-gradient(
+    to right,
+    #eb3941,
+    #f15e64,
+    #e14e53,
+    #e2373f
+  );
+}
+
+.cancel-btn:hover {
+  background-position: 100% 0;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.cancel-btn:focus {
+  outline: none;
+}
+
+.delete-btn {
+  font-size: 1rem;
+  font-weight: 900;
+  padding: 0;
+  border: none;
+  background-color: #000000;
+  color: #ffffff;
+  cursor: pointer;
+  width: 20%;
+}
+
+.delete-btn:hover {
+  color: red;
 }
 
 .modal {
-  height: 50%;
-  width: 30%;
+  height: 45%;
+  width: 35%;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -250,15 +411,6 @@ input {
 /* Style for the submit button */
 #submitTodo:hover {
   background-color: #45a049;
-}
-
-.todo-item {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 30%;
-  left: 45%;
 }
 
 footer {
