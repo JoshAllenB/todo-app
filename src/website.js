@@ -1,5 +1,6 @@
 import { initHandler } from "./handler";
 import { inboxHandler } from "./handler";
+import { projectHandler } from "./handler";
 
 function createHeader(){
   const header = document.createElement('header');
@@ -62,7 +63,8 @@ function createSideMenu() {
   const project = document.createElement('div');
   project.classList.add('project');
   project.innerHTML = '<h1>Project</h1>';
-  project.appendChild(createButton('+ Add Project', 'add-project'));
+  const addProjectBtn = createButton('+ Add Project', 'add-project');
+  project.appendChild(addProjectBtn);
 
   sideMenu.appendChild(home);
   sideMenu.appendChild(project);
