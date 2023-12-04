@@ -1,6 +1,4 @@
-import { initHandler } from "./handler";
-import { inboxHandler } from "./handler";
-import { projectHandler } from "./handler";
+import { initHandler } from "./homeHandler";
 
 function createHeader(){
   const header = document.createElement('header');
@@ -28,20 +26,14 @@ function createFooterLink(text) {
   return link;
 }
 
-let content;
-
 function createContent() {
-  if (!content) {
-    content = document.createElement('div');
-    content.classList.add('content');
-    content.setAttribute('id', 'mainContent');
-
-  }
+  const content = document.createElement('div');
+  content.classList.add('content');
+  content.setAttribute('id', 'mainContent');
   return content;
 }
 
-function createSideMenu() {
-  const content = createContent(); // Create content element
+function createSideMenu(content) {
   const sideMenu = document.createElement('div');
   sideMenu.classList.add('sideMenu');
 
@@ -71,28 +63,33 @@ function createSideMenu() {
   content.appendChild(sideMenu); // Append sideMenu to content
   document.body.appendChild(content); // Append content to the body
 
-  inboxHandler();
 }
 
 function createTodoList() {
-  const content = createContent();
-  const list = document.createElement('div');
-  list.classList.add('todoList');
+  const todoContainer = document.createElement('div');
+  todoContainer.classList.add('todoList'); // New container for the todo list
 
   const todoBtn = document.createElement('button');
   todoBtn.classList.add('todoBtn');
   todoBtn.textContent = 'Add To-Do List';
 
-  list.appendChild(todoBtn);
-  content.appendChild(list);
+  todoContainer.appendChild(todoBtn);
+  // content.appendChild(todoContainer); // Don't append directly to content
+
+  return todoContainer; // Return the todo container
 }
+
 
 function initWebsite() {
   createHeader();
-  createSideMenu();
-  createTodoList();
+  const content = createContent(); // Create content element
+  const todoContainer = createTodoList(); // Create todo container
+  createSideMenu(content); // Pass content to createSideMenu
+  content.appendChild(todoContainer); // Append todo container to content
   initHandler();
   createFooter();
 }
+
+
 
 export { initWebsite, createContent };
