@@ -451,6 +451,30 @@ button.active {
   transform: perspective(1px) scale3d(1.044, 1.044, 1) translateZ(0) !important;
 }
 
+.project-todo-list.hidden {
+  display: none;
+}
+
+.projNameBtn {
+  text-align: center;
+  text-transform: uppercase;
+  border: none;
+  background: none;
+  font-size: 1.3rem;
+  margin: 10px;
+  height: 60%;
+  width: 100%;
+  cursor: pointer;
+  color: #fff;
+  border-color: transparent;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.projNameBtn:hover {
+  color: black;
+  background-color: #ffffff;
+}
+
 .submit-btn {
   font-size: 1rem;
   font-weight: 600;

@@ -3,67 +3,58 @@ import { createModal } from "./modal";
 function projectHandler() {
   console.log("Entering projectHandler");
 
-  const addProjectBtn = document.getElementById("add-project");
-
-  function hideProjectDiv() {
-    const projectDiv = document.querySelector(".project-todo-list");
-    if (projectDiv) {
-      projectDiv.classList.add("hidden");
-    }
-  }
+  const addProjectBtn = document.getElementById('add-project');
 
   if (addProjectBtn) {
-    const projectDiv = document.querySelector(".project");
+    const projectDiv = document.querySelector('.project');
 
     const clickHandler = function () {
       console.log("Entering clickHandler");
 
-      if (projectDiv && projectDiv.querySelector(".project-input-container")) {
+      if (projectDiv && projectDiv.querySelector('.project-input-container')) {
         console.log("Input field already created. Exiting clickHandler.");
         return;
       }
 
-      const inputElement = document.createElement("input");
-      inputElement.type = "text";
-      inputElement.placeholder = "Enter project name";
+      const inputElement = document.createElement('input');
+      inputElement.type = 'text';
+      inputElement.placeholder = 'Enter project name';
 
-      const submitBtn = document.createElement("button");
-      submitBtn.textContent = "Submit";
-      submitBtn.classList.add("submit-btn");
+      const submitBtn = document.createElement('button');
+      submitBtn.textContent = 'Submit';
+      submitBtn.classList.add('submit-btn');
 
-      const cancelBtn = document.createElement("button");
-      cancelBtn.textContent = "Cancel";
-      cancelBtn.classList.add("cancel-btn");
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.classList.add('cancel-btn');
 
-      const container = document.createElement("div");
-      container.classList.add("project-input-container");
+      const container = document.createElement('div');
+      container.classList.add('project-input-container');
       container.appendChild(inputElement);
       container.appendChild(submitBtn);
       container.appendChild(cancelBtn);
 
-      submitBtn.addEventListener("click", function () {
+      submitBtn.addEventListener('click', function () {
         console.log("Submit button clicked");
 
         const projectName = inputElement.value.trim();
 
         if (projectName) {
-          console.log("Project Name:", projectName);
+          console.log('Project Name:', projectName);
 
-          const projectItem = document.createElement("div");
-          projectItem.classList.add("project-item");
-          const projectNameBtn = document.createElement("button");
+          const projectItem = document.createElement('div');
+          projectItem.classList.add('project-item');
+          const projectNameBtn = document.createElement('button');
           projectNameBtn.textContent = projectName;
-          projectNameBtn.classList.add("projNameBtn");
+          projectNameBtn.classList.add('projNameBtn');
 
-          const deleteBtn = document.createElement("button");
-          deleteBtn.textContent = "x";
-          deleteBtn.classList.add("delete-btn");
+          const deleteBtn = document.createElement('button');
+          deleteBtn.textContent = 'x';
+          deleteBtn.classList.add('delete-btn');
 
-          deleteBtn.addEventListener("click", function () {
+          deleteBtn.addEventListener('click', function () {
             projectItem.remove();
-            const projectTodoList = document.querySelector(
-              `.project-todo-list[data-project="${projectName}"]`
-            );
+            const projectTodoList = document.querySelector(`.project-todo-list[data-project="${projectName}"]`);
             if (projectTodoList) {
               projectTodoList.remove();
             }
@@ -76,48 +67,47 @@ function projectHandler() {
 
           container.remove();
 
-          let projectTodoList = document.createElement("div");
-          projectTodoList.classList.add("project-todo-list", "hidden");
+          let projectTodoList = document.createElement('div');
+          projectTodoList.classList.add('project-todo-list', 'hidden');
           projectTodoList.dataset.project = projectName;
 
-          const addTodoBtn = document.createElement("button");
+          const addTodoBtn = document.createElement('button');
           addTodoBtn.textContent = `Add Todo for ${projectName}`;
-          addTodoBtn.classList.add("add-todo-btn");
+          addTodoBtn.classList.add('add-todo-btn');
 
-          addTodoBtn.addEventListener("click", function () {
+          addTodoBtn.addEventListener('click', function () {
             const modal = createModal();
-            document.getElementById("mainContent").appendChild(modal);
+            document.getElementById('mainContent').appendChild(modal);
 
             closeModal(modal);
             submitTodoForProject(projectName, modal);
-            hideProjectDiv();
           });
 
           projectTodoList.appendChild(addTodoBtn);
 
           // Append the project todo list to the .todoList div
-          const todoList = document.querySelector(".todoList");
+          const todoList = document.querySelector('.todoList');
           if (todoList) {
             todoList.appendChild(projectTodoList);
           }
 
           // Add event listener to toggle visibility of project todo list
-          projectNameBtn.addEventListener("click", function () {
+          projectNameBtn.addEventListener('click', function () {
             // Hide all project todo lists
-            document.querySelectorAll(".project-todo-list").forEach((list) => {
-              list.classList.add("hidden");
-              hideProjectDiv();
+            document.querySelectorAll('.project-todo-list').forEach(list => {
+              list.classList.add('hidden');
             });
 
             // Show the clicked project todo list
-            projectTodoList.classList.remove("hidden");
+            projectTodoList.classList.remove('hidden');
           });
+
         } else {
-          alert("Please enter a project name.");
+          alert('Please enter a project name.');
         }
       });
 
-      cancelBtn.addEventListener("click", function () {
+      cancelBtn.addEventListener('click', function () {
         container.remove();
       });
 
@@ -128,7 +118,7 @@ function projectHandler() {
       console.log("Exiting clickHandler");
     };
 
-    addProjectBtn.addEventListener("click", clickHandler);
+    addProjectBtn.addEventListener('click', clickHandler);
   }
 
   console.log("Exiting projectHandler");
