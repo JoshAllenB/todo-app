@@ -582,6 +582,10 @@ button.active {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
+  .alert-message {
+    position: absolute;
+  }
+
 /* Style for the close button */
 .close {
   display: flex;
