@@ -3,60 +3,58 @@ import { createModal } from "./modal";
 function projectHandler() {
   console.log("Entering projectHandler");
 
-  const addProjectBtn = document.getElementById("add-project");
+  const addProjectBtn = document.getElementById('add-project');
 
   if (addProjectBtn) {
-    const projectDiv = document.querySelector(".project");
+    const projectDiv = document.querySelector('.project');
 
     const clickHandler = function () {
       console.log("Entering clickHandler");
 
-      if (projectDiv && projectDiv.querySelector(".project-input-container")) {
+      if (projectDiv && projectDiv.querySelector('.project-input-container')) {
         console.log("Input field already created. Exiting clickHandler.");
         return;
       }
 
-      const inputElement = document.createElement("input");
-      inputElement.type = "text";
-      inputElement.placeholder = "Enter project name";
+      const inputElement = document.createElement('input');
+      inputElement.type = 'text';
+      inputElement.placeholder = 'Enter project name';
 
-      const submitBtn = document.createElement("button");
-      submitBtn.textContent = "Submit";
-      submitBtn.classList.add("submit-btn");
+      const submitBtn = document.createElement('button');
+      submitBtn.textContent = 'Submit';
+      submitBtn.classList.add('submit-btn');
 
-      const cancelBtn = document.createElement("button");
-      cancelBtn.textContent = "Cancel";
-      cancelBtn.classList.add("cancel-btn");
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.classList.add('cancel-btn');
 
-      const container = document.createElement("div");
-      container.classList.add("project-input-container");
+      const container = document.createElement('div');
+      container.classList.add('project-input-container');
       container.appendChild(inputElement);
       container.appendChild(submitBtn);
       container.appendChild(cancelBtn);
 
-      submitBtn.addEventListener("click", function () {
+      submitBtn.addEventListener('click', function () {
         console.log("Submit button clicked");
 
         const projectName = inputElement.value.trim();
 
         if (projectName) {
-          console.log("Project Name:", projectName);
+          console.log('Project Name:', projectName);
 
-          const projectItem = document.createElement("div");
-          projectItem.classList.add("project-item");
-          const projectNameBtn = document.createElement("button");
+          const projectItem = document.createElement('div');
+          projectItem.classList.add('project-item');
+          const projectNameBtn = document.createElement('button');
           projectNameBtn.textContent = projectName;
-          projectNameBtn.classList.add("projNameBtn");
+          projectNameBtn.classList.add('projNameBtn');
 
-          const deleteBtn = document.createElement("button");
-          deleteBtn.textContent = "x";
-          deleteBtn.classList.add("delete-btn");
+          const deleteBtn = document.createElement('button');
+          deleteBtn.textContent = 'x';
+          deleteBtn.classList.add('delete-btn');
 
-          deleteBtn.addEventListener("click", function () {
+          deleteBtn.addEventListener('click', function () {
             projectItem.remove();
-            const projectTodoList = document.querySelector(
-              `.project-todo-list[data-project="${projectName}"]`
-            );
+            const projectTodoList = document.querySelector(`.project-todo-list[data-project="${projectName}"]`);
             if (projectTodoList) {
               projectTodoList.remove();
             }
@@ -69,17 +67,17 @@ function projectHandler() {
 
           container.remove();
 
-          let projectTodoList = document.createElement("div");
-          projectTodoList.classList.add("project-todo-list", "hidden");
+          let projectTodoList = document.createElement('div');
+          projectTodoList.classList.add('project-todo-list', 'hidden');
           projectTodoList.dataset.project = projectName;
 
-          const addTodoBtn = document.createElement("button");
+          const addTodoBtn = document.createElement('button');
           addTodoBtn.textContent = `Add Todo for ${projectName}`;
-          addTodoBtn.classList.add("add-todo-btn");
+          addTodoBtn.classList.add('add-todo-btn');
 
-          addTodoBtn.addEventListener("click", function () {
+          addTodoBtn.addEventListener('click', function () {
             const modal = createModal();
-            document.getElementById("mainContent").appendChild(modal);
+            document.getElementById('mainContent').appendChild(modal);
 
             closeModal(modal);
             submitTodoForProject(projectName, modal);
@@ -88,32 +86,28 @@ function projectHandler() {
           projectTodoList.appendChild(addTodoBtn);
 
           // Append the project todo list to the .todoList div
-          const todoList = document.querySelector(".todoList");
+          const todoList = document.querySelector('.todoList');
           if (todoList) {
             todoList.appendChild(projectTodoList);
           }
 
           // Add event listener to toggle visibility of project todo list
-          projectNameBtn.addEventListener("click", function () {
+          projectNameBtn.addEventListener('click', function () {
             // Hide all project todo lists
-            document.querySelectorAll(".project-todo-list").forEach((list) => {
-              list.classList.add("hidden");
+            document.querySelectorAll('.project-todo-list').forEach(list => {
+              list.classList.add('hidden');
             });
 
             // Show the clicked project todo list
-            projectTodoList.classList.remove("hidden");
-
-            const commonTodoList = document.querySelector(".todoList");
-            if (commonTodoList) {
-              commonTodoList.classList.add("hidden");
-            }
+            projectTodoList.classList.remove('hidden');
           });
+
         } else {
-          alert("Please enter a project name.");
+          alert('Please enter a project name.');
         }
       });
 
-      cancelBtn.addEventListener("click", function () {
+      cancelBtn.addEventListener('click', function () {
         container.remove();
       });
 
@@ -124,7 +118,7 @@ function projectHandler() {
       console.log("Exiting clickHandler");
     };
 
-    addProjectBtn.addEventListener("click", clickHandler);
+    addProjectBtn.addEventListener('click', clickHandler);
   }
 
   console.log("Exiting projectHandler");
@@ -178,64 +172,57 @@ function submitTodoForProject(projectName, modal) {
     const submitHandler = function () {
       console.log("Submit Todo button clicked");
 
-      const todoName = document.getElementById("todoName").value.trim();
-      const todoDate = document.getElementById("todoDate").value.trim();
+      const todoName = document.getElementById("todoName").value;
+      const todoDate = document.getElementById("todoDate").value;
 
-      // Check if both todo name and date are filled
-      if (todoName && todoDate) {
-        const todoItem = document.createElement("div");
-        todoItem.classList.add("todo-item");
+      const todoItem = document.createElement("div");
+      todoItem.classList.add("todo-item");
 
-        const checkmarkSpan = document.createElement("span");
-        checkmarkSpan.classList.add("checkmark");
+      const checkmarkSpan = document.createElement("span");
+      checkmarkSpan.classList.add("checkmark");
 
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
 
-        const nameElement = document.createElement("h3");
-        nameElement.textContent = todoName;
+      const nameElement = document.createElement("h3");
+      nameElement.textContent = todoName;
 
-        const dateElement = document.createElement("p");
-        dateElement.textContent = todoDate;
+      const dateElement = document.createElement("p");
+      dateElement.textContent = todoDate;
 
-        checkmarkSpan.appendChild(checkbox);
-        todoItem.appendChild(checkmarkSpan);
-        todoItem.appendChild(nameElement);
-        todoItem.appendChild(dateElement);
+      checkmarkSpan.appendChild(checkbox);
+      todoItem.appendChild(checkmarkSpan);
+      todoItem.appendChild(nameElement);
+      todoItem.appendChild(dateElement);
 
-        // Append the todo item to the project-specific todo list
-        projectTodoItemWrapper.appendChild(todoItem);
+      // Append the todo item to the project-specific todo list
+      projectTodoItemWrapper.appendChild(todoItem);
 
-        const sortedTodoItems = Array.from(projectTodoItemWrapper.children).sort(
-          (a, b) => {
-            const dateA = a.querySelector("p")
-              ? new Date(a.querySelector("p").textContent)
-              : null;
-            const dateB = b.querySelector("p")
-              ? new Date(b.querySelector("p").textContent)
-              : null;
+      const sortedTodoItems = Array.from(projectTodoItemWrapper.children).sort(
+        (a, b) => {
+          const dateA = a.querySelector("p")
+            ? new Date(a.querySelector("p").textContent)
+            : null;
+          const dateB = b.querySelector("p")
+            ? new Date(b.querySelector("p").textContent)
+            : null;
 
-            return dateA - dateB;
-          }
-        );
+          return dateA - dateB;
+        }
+      );
 
-        projectTodoItemWrapper.innerHTML = "";
+      projectTodoItemWrapper.innerHTML = "";
 
-        sortedTodoItems.forEach((item) => {
-          projectTodoItemWrapper.appendChild(item);
-        });
+      sortedTodoItems.forEach((item) => {
+        projectTodoItemWrapper.appendChild(item);
+      });
 
-        // Hide and remove the modal
-        modal.style.display = "none";
-        modal.remove();
+      // Hide and remove the modal
+      modal.style.display = "none";
+      modal.remove();
 
-        // Remove the event listener after submitting
-        submitBtn.removeEventListener("click", submitHandler);
-        alertMessage.hidden = true;
-      } else {
-        alertMessage.textContent = 'Please enter both task name and date.';
-        alertMessage.hidden = false;
-      }
+      // Remove the event listener after submitting
+      submitBtn.removeEventListener("click", submitHandler);
     };
 
     submitBtn.addEventListener("click", submitHandler);

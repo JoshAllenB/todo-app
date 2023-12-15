@@ -22,11 +22,6 @@ function createModal() {
   submitBtn.id = 'submitTodo';
   submitBtn.textContent = 'Submit';
 
-  const alertMessage = document.createElement('div');
-  alertMessage.id = 'alertMessage';
-  alertMessage.classList.add('alert-message');
-  alertMessage.hidden = true;
-
   modalContent.appendChild(closeBtn);
   modalContent.appendChild(nameLabel);
   modalContent.appendChild(nameInput);
@@ -35,9 +30,8 @@ function createModal() {
   modalContent.appendChild(submitBtn);
 
   modal.appendChild(modalContent);
-  modal.appendChild(alertMessage);
 
-  return {modal, alertMessage};
+  return modal;
 }
 
 function createLabel(text, htmlFor) {
@@ -56,3 +50,4 @@ function createInput(type, id, required) {
 }
 
 export { createModal };
+
