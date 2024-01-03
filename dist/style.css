@@ -604,6 +604,15 @@ button.active {
   background-color: red;
 }
 
+.todo-item.hidden {
+  display: none;
+}
+
+.todo-item-wrapper.hidden {
+  display: none;
+}
+
+
 /* Style for the form elements within the modal */
 label {
   display: block;
