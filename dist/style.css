@@ -18,7 +18,7 @@ header {
   height: 8%;
   width: 100%;
   color: white;
-  background-color: black;
+  background-color: #171717;
 }
 
 header h1 {
@@ -46,7 +46,7 @@ button.active {
   width: 17%;
   display: flex;
   flex-direction: column;
-  background-color: rgb(0, 0, 0);
+  background-color: #171717;
 }
 
 .home {
@@ -85,6 +85,7 @@ button.active {
 .home button:hover {
   color: black;
   background-color: #ffffff;
+  transition: all .2s ease-in;
 }
 
 .home button.active {
@@ -135,11 +136,6 @@ button.active {
   transition: background-color 0.2s ease-in-out;
 }
 
-.project-item span:hover {
-  color: black;
-  background-color: #ffffff;
-}
-
 .project-item span.active {
   color: black;
   background-color: #ffffff;
@@ -162,6 +158,7 @@ button.active {
 #add-project:hover {
   color: black;
   background-color: #ffffff;
+  transition: all .3s ease-in;
 }
 
 #add-project.active {
@@ -175,6 +172,7 @@ button.active {
   align-items: center;
   height: 100%;
   width: 100%;
+  background-color: #F8F7F4;
 }
 
 .todoBtn {
@@ -254,6 +252,7 @@ button.active {
 .todo-item:hover {
   border-radius: 10px;
   background-color: #cecece4d;
+  transition: all .2s ease-in;
 }
 
 .todo-item input {
@@ -278,113 +277,6 @@ button.active {
   border-radius: 3px;
   margin-right: 10px;
   cursor: pointer;
-}
-
-.todo-item input:hover ~ .checkmark,
-.todo-item input:focus ~ .checkmark {
-  background: #92d1ad;
-}
-
-.todo-item input:checked ~ .checkmark {
-  background: #329041;
-}
-
-.todo-item input:hover:not([disabled]):checked ~ .checkmark,
-.todo-item input:checked:focus ~ .checkmark {
-  background: #0e6647;
-}
-
-.todo-item input:disabled ~ .checkmark {
-  background: #e6e6e6;
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-.checkmark:after {
-  box-sizing: unset;
-  content: '';
-  position: absolute;
-  display: none;
-}
-
-.todo-item input:checked ~ .checkmark:after {
-  display: block;
-}
-
-.checkmark:after {
-  left: 7px;
-  top: 3px;
-  width: 3px;
-  height: 9px;
-  border: solid #ffffff;
-  border-width: 0 3px 3px 0;
-  transform: rotate(45deg);
-}
-
-.todo-item input:disabled ~ .checkmark:after {
-  border-color: #7b7b7b;
-}
-
-.checkmark::before {
-  content: '';
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 4.633rem;
-  height: 4.5rem;
-  margin-left: -1.3rem;
-  margin-top: -1.3rem;
-  background: #2aa1c0;
-  border-radius: 3rem;
-  opacity: 0.6;
-  z-index: 99999;
-  transform: scale(0);
-}
-
-@keyframes s-ripple {
-  0% {
-    transform: scale(0);
-  }
-  20% {
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1);
-  }
-}
-
-@keyframes s-ripple-dup {
-  0% {
-    transform: scale(0);
-  }
-  30% {
-    transform: scale(1);
-  }
-  60% {
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1);
-  }
-}
-
-.checkmark input + .checkmark::before {
-  animation: s-ripple 250ms ease-out;
-}
-
-.checkmark input:checked + .checkmark::before {
-  animation-name: s-ripple-dup;
-}
-
-.remove-transition {
-  opacity: 0;
-  height: 0;
-  padding: 0;
-  margin: 0;
-  transition: opacity 12s ease-out, height 12s ease-out, padding 12s ease-out, margin 12s ease-out; /* Adjust the duration as needed */
 }
 
 .todo-item h3{
@@ -473,6 +365,7 @@ button.active {
 .projNameBtn:hover {
   color: black;
   background-color: #ffffff;
+  transition: all .2s ease-in;
 }
 
 .submit-btn {
@@ -550,14 +443,16 @@ button.active {
   font-weight: 900;
   padding: 0;
   border: none;
-  background-color: #000000;
+  background-color: #171717;
   color: #ffffff;
   cursor: pointer;
   width: 20%;
 }
 
 .delete-btn:hover {
-  color: red;
+  border-radius: 5px;
+  background-color: red;
+  transition: all .5s ease-in-out;
 }
 
 .modal {
@@ -645,8 +540,19 @@ input {
   background-color: #45a049;
 }
 
+.todo-section {
+
+  background-color: red;
+
+  
+}
+
+.todo-section.hidden {
+  display: none;
+}
+
 footer {
-  background-color: black;
+  background-color: #171717;
   color: white;
   width: 100%;
   display: flex;
