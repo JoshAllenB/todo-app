@@ -1,5 +1,4 @@
-import { initWebsite } from "./website";
+import Website from "./website";
 
-initWebsite();
-
-
+const myWebsite = new Website();
+myWebsite.initWebsite();

@@ -1,104 +1,139 @@
-import { initHome } from "./homeHandler";
-import { initProject } from "./projHandler";
-import { initHandler, filterTodoItems } from "./handler";
+import Handler from "./handler";
 
-function createHeader() {
-  const header = document.createElement("header");
-  const title = document.createElement("h1");
-  title.textContent = "To-Do List";
+class Website {
+  constructor() {
+    const handler = new Handler();
 
-  header.appendChild(title);
-  document.body.appendChild(header);
-}
+    this.createHeader = function () {
+      const header = document.createElement("header");
+      const title = document.createElement("h1");
+      title.textContent = "To-Do List";
 
-function createFooter() {
-  const footer = document.createElement("footer");
-  const footerLink = document.createElement("div");
-  footerLink.classList.add("link");
+      header.appendChild(title);
+      document.body.appendChild(header);
+    };
 
-  const copyright = createFooterLink(
-    'Copyright <i class="fa-regular fa-copyright"></i> JoshAllen'
-  );
-  footerLink.appendChild(copyright);
-  footer.appendChild(footerLink);
-  document.body.appendChild(footer);
-}
+    this.createFooter = function () {
+      const footer = document.createElement("footer");
+      const footerLink = document.createElement("div");
+      footerLink.classList.add("link");
 
-function createFooterLink(text) {
-  const link = document.createElement("h1");
-  link.innerHTML = text;
-  return link;
-}
+      const copyright = this.createFooterLink(
+        'Copyright <i class="fa-regular fa-copyright"></i> JoshAllen'
+      );
 
-function createContent() {
-  const content = document.createElement("div");
-  content.classList.add("content");
-  content.setAttribute("id", "mainContent");
+      footerLink.appendChild(copyright);
+      footer.appendChild(footerLink);
+      document.body.appendChild(footer);
+    };
 
-  return content;
-}
+    this.createFooterLink = function (text) {
+      const link = document.createElement("h1");
+      link.innerHTML = text;
 
-function createSideMenu(content) {
-  const sideMenu = document.createElement("div");
-  sideMenu.classList.add("sideMenu");
+      return link;
+    };
 
-  function createButton(text, id) {
-    const button = document.createElement("button");
-    button.textContent = text;
-    button.id = id;
-    return button;
+    this.createContent = function () {
+      const content = document.createElement("div");
+      content.classList.add("content");
+      content.setAttribute("id", "mainContent");
+
+      const sideMenu = document.createElement("div");
+      sideMenu.classList.add("sideMenu");
+
+      const home = document.createElement("div");
+      home.classList.add("home");
+      home.innerHTML = "<h1>Home</h1>";
+
+      const inboxBtn = handler.createButton("Inbox", "inbox");
+      inboxBtn.addEventListener("click", () => {
+        this.showPage("inboxPage");
+        const todoForm = handler.createTodoListForm();
+        inbox.querySelector(".form-container").appendChild(todoForm);
+      });
+
+      home.appendChild(inboxBtn);
+
+      const todayBtn = handler.createButton("Today", "today");
+      todayBtn.addEventListener("click", () => this.showPage("todayPage"));
+      home.appendChild(todayBtn);
+
+      const thisWeekBtn = handler.createButton("This Week", "this-week");
+      thisWeekBtn.addEventListener("click", () => this.showPage("weekPage"));
+      home.appendChild(thisWeekBtn);
+
+      const project = document.createElement("div");
+      project.classList.add("project");
+      project.innerHTML = "<h1>Project</h1>";
+      const addProjectBtn = handler.createButton(
+        "+ Add Project",
+        "add-project"
+      );
+      addProjectBtn.addEventListener("click", () =>
+        this.showPage("projectPage")
+      );
+      project.appendChild(addProjectBtn);
+
+      sideMenu.appendChild(home);
+      sideMenu.appendChild(project);
+      content.appendChild(sideMenu);
+
+      const inbox = document.createElement("div");
+      inbox.classList.add("inbox-page", "hidden");
+      inbox.setAttribute("id", "inboxPage");
+
+      const formContainer = document.createElement("div");
+      formContainer.classList.add("form-container");
+
+      const todoContainer = document.createElement("div");
+      todoContainer.classList.add("todo-item-container");
+
+      inbox.appendChild(formContainer.cloneNode(true));
+      inbox.appendChild(todoContainer.cloneNode(true));
+
+      const today = document.createElement("div");
+      today.classList.add("today-page", "hidden");
+      today.setAttribute("id", "todayPage");
+      today.appendChild(todoContainer.cloneNode(true));
+
+      const week = document.createElement("div");
+      week.classList.add("week-page", "hidden");
+      week.setAttribute("id", "weekPage");
+      week.appendChild(todoContainer.cloneNode(true))
+
+      const projectPage = document.createElement("div");
+      projectPage.classList.add("project-page", "hidden");
+      projectPage.setAttribute("id", "projectPage");
+      projectPage.appendChild(formContainer.cloneNode(true));
+      projectPage.appendChild(todoContainer).cloneNode(true);
+
+      content.appendChild(inbox);
+      content.appendChild(today);
+      content.appendChild(week);
+      content.appendChild(projectPage);
+
+      document.body.appendChild(content);
+    };
+
+    this.showPage = function (pageId) {
+      const pages = document.querySelectorAll(".content > div:not(.sideMenu)");
+      pages.forEach((page) => {
+        page.classList.add("hidden");
+      });
+
+      const selectedPage = document.getElementById(pageId);
+      if (selectedPage) {
+        selectedPage.classList.remove("hidden");
+      }
+    };
+
+    this.initWebsite = function () {
+      this.createHeader();
+      this.createContent();
+      this.createFooter();
+    };
   }
-
-  const home = document.createElement("div");
-  home.classList.add("home");
-  home.innerHTML = "<h1>Home</h1>";
-  const inboxBtn = createButton("Inbox", "inbox");
-  home.appendChild(inboxBtn);
-
-  const todayBtn = createButton("Today", "today");
-  todayBtn.addEventListener("click", () => filterTodoItems("today"));
-  home.appendChild(todayBtn);
-
-  const thisWeekBtn = createButton("This Week", "this-week");
-  thisWeekBtn.addEventListener("click", () => filterTodoItems("this-week"));
-  home.appendChild(thisWeekBtn);
-
-  const project = document.createElement("div");
-  project.classList.add("project");
-  project.innerHTML = "<h1>Project</h1>";
-  const addProjectBtn = createButton("+ Add Project", "add-project");
-  project.appendChild(addProjectBtn);
-
-  sideMenu.appendChild(home);
-  sideMenu.appendChild(project);
-  content.appendChild(sideMenu); // Append sideMenu to content
-  document.body.appendChild(content); // Append content to the body
 }
 
-function createTodoList() {
-  const todoContainer = document.createElement("div");
-  todoContainer.classList.add("todoList"); // New container for the todo list
-
-  const todoBtn = document.createElement("button");
-  todoBtn.classList.add("todoBtn");
-  todoBtn.textContent = "Add To-Do List";
-
-  todoContainer.appendChild(todoBtn);
-  // content.appendChild(todoContainer); // Don't append directly to content
-
-  return todoContainer; // Return the todo container
-}
-
-function initWebsite() {
-  createHeader();
-  const content = createContent(); // Create content element
-  const todoContainer = createTodoList(); // Create todo container
-  createSideMenu(content); // Pass content to createSideMenu
-  content.appendChild(todoContainer); // Append todo container to content
-  initHome();
-  initProject();
-  initHandler();
-  createFooter();
-}
-
-export { initWebsite, createContent };
+export default Website;
