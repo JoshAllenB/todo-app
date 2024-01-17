@@ -131,7 +131,6 @@ button.active {
   height: 45px;
   margin: 10px;
   margin-top: 40px;
-
 }
 
 .todo-form {
@@ -146,7 +145,6 @@ button.active {
   width: 30%;
   border: none;
   outline: none;
-  -webkit-box-shadow: 7px 9px 15px 0px rgba(0, 0, 0, 0.51);
   box-shadow: 7px 9px 15px 0px rgba(0, 0, 0, 0.2);
   padding: 10px;
   text-align: center;
@@ -159,6 +157,7 @@ button.active {
   border-bottom: 3px solid #5c5c5c;
   border-radius: 5px;
 }
+
 
 .todo-form button {
   border: 3px solid #10b10d;
@@ -194,12 +193,12 @@ button.active {
 }
 
 .todo-item-container {
-  width: 30%;
+  width: 40%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin-top: 50px;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   text-transform: uppercase;
   gap: 10px;
 }
@@ -211,6 +210,23 @@ button.active {
   grid-column-gap: 0px;
   grid-row-gap: 0px;
   text-align: center;
+  padding: 5px;
+  transition: transform 1s cubic-bezier(0.235, 0, 0.05, 0.95);
+}
+
+.todo-item:hover {
+  border-bottom: 5px solid rgba(80, 80, 80, 0.37);
+  background-color: #f1f1f1;
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.18);
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.18);
+  transition: background 0.9s ease-in-out;
+  transform: perspective(6px) scale3d(1.044, 1.044, 1) translateZ(0);
+}
+
+.todo-item p {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
 .checkbox-container {
@@ -232,7 +248,7 @@ input[type="checkbox"] {
   place-content: center;
 }
 
-input[type="checkbox"]:hover{
+input[type="checkbox"]:hover {
   border: 3px solid #10b10d;
   cursor: pointer;
 }
@@ -258,10 +274,12 @@ input[type="checkbox"]:focus {
   outline-offset: max(2px, 0.15em);
   background-color: #10b10d;
   border: 1px solid #10b10d;
-
 }
 
 .priority-icon {
+  display: flex;
+  justify-content: center;
+  align-self: center;
   text-align: center;
   color: #dadd09;
   cursor: pointer;
