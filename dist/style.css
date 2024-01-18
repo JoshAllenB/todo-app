@@ -194,6 +194,8 @@ button.active {
 
 .todo-item-container {
   width: 40%;
+  position: relative;
+  left: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -223,7 +225,7 @@ button.active {
   transform: perspective(6px) scale3d(1.044, 1.044, 1) translateZ(0);
 }
 
-.todo-item p {
+.todo-item span {
   margin: 0;
   font-size: 1.2rem;
   font-weight: 700;
