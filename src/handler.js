@@ -1,6 +1,7 @@
 class Handler {
   constructor() {
     this.todos = [];
+    this.todoIdCounter = 0;
   }
 
   createButton(text, id) {
@@ -59,6 +60,9 @@ class Handler {
   createTodoItem(todo, inboxContainer) {
     const todoItem = document.createElement("div");
     todoItem.classList.add("todo-item");
+    todoItem.setAttribute("data-todo-id", todo.id);
+
+    console.log("Creating todo item:", todo);
 
     const checkboxContainer = this.createCheckboxContainer(todo);
 
@@ -67,6 +71,7 @@ class Handler {
 
     const dateLabel = document.createElement("span");
     dateLabel.textContent = todo.date;
+    console.log("Date Label Value:", dateLabel.textContent);
 
     const priorityIcon = this.createPriorityIcon(
       todo,
@@ -78,6 +83,8 @@ class Handler {
     todoItem.appendChild(nameLabel);
     todoItem.appendChild(dateLabel);
     todoItem.appendChild(priorityIcon);
+
+    console.log("Todo Item created:", todoItem);
 
     return todoItem;
   }
@@ -120,6 +127,8 @@ class Handler {
       console.log("priority icon clicked");
       console.log("Updated todo:", todo);
 
+      this.updatePriorityIcon(todo);
+
       if (todo.isPriority) {
         todoItem.classList.add("priority");
         inboxContainer.prepend(todoItem);
@@ -130,10 +139,30 @@ class Handler {
     return priorityIcon;
   }
 
+  updatePriorityIcon(todo) {
+    const otherPages = document.querySelectorAll(
+      ".content > div:not(.sideMenu)"
+    );
+
+    otherPages.forEach((page) => {
+      const todoItem = page.querySelector(
+        `.todo-item[data-todo-id="${todo.id}"]`
+      );
+      if (todoItem) {
+        const priorityIcon = todoItem.querySelector(".priority-icon");
+        if (priorityIcon) {
+          priorityIcon.classList.toggle("fa-regular", !todo.isPriority);
+          priorityIcon.classList.toggle("fa-solid", todo.isPriority);
+        }
+      }
+    });
+  }
+
   addTodoToInbox(name, date) {
     const todoItemContainer = document.querySelector(".todo-item-container");
 
     const todo = {
+      id: this.todoIdCounter++,
       name,
       date,
       isPriority: false,
@@ -158,6 +187,42 @@ class Handler {
     if (index !== -1) {
       this.todos.splice(index, 1);
     }
+  }
+
+  filterByDueDate(startDate, endDate, includeTime = false) {
+    const startOfDate = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate()
+    );
+
+    const endOfDate = endDate
+      ? new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate(),
+          23,
+          59,
+          58
+        )
+      : new Date(
+          startOfDate.getFullYear(),
+          startOfDate.getMonth(),
+          startOfDate.getDate(),
+          23,
+          59,
+          59
+        );
+
+    return this.todos.filter((todo) => {
+      const todoDueDate = new Date(todo.date);
+
+      if (includeTime) {
+        return todoDueDate >= startOfDate && todoDueDate <= endOfDate;
+      } else {
+        return todoDueDate >= startOfDate && todoDueDate <= endOfDate;
+      }
+    });
   }
 
   arrangeInbox(inboxContainer) {
@@ -204,7 +269,6 @@ class Handler {
   }
 
   initHandler() {
-    this.createButton();
     this.createTodoListForm();
   }
 }

@@ -56,11 +56,24 @@ class Website {
       home.appendChild(inboxBtn);
 
       const todayBtn = handler.createButton("Today", "today");
-      todayBtn.addEventListener("click", () => this.showPage("todayPage"));
+      todayBtn.addEventListener("click", () => {
+        this.showPage("todayPage");
+        const today = new Date();
+        const filteredTodos = handler.filterByDueDate(today, null, true); // Pass includeTime as true
+        this.showFilteredTodos(filteredTodos, "todayPage");
+      });
       home.appendChild(todayBtn);
 
       const thisWeekBtn = handler.createButton("This Week", "this-week");
-      thisWeekBtn.addEventListener("click", () => this.showPage("weekPage"));
+      thisWeekBtn.addEventListener("click", () => {
+        const today = new Date();
+        const nextWeek = new Date(today);
+        nextWeek.setDate(today.getDate() + 7);
+
+        this.showPage("weekPage");
+        const filteredTodos = handler.filterByDueDate(today, nextWeek);
+        this.showFilteredTodos(filteredTodos, "weekPage");
+      });
       home.appendChild(thisWeekBtn);
 
       const project = document.createElement("div");
@@ -100,7 +113,7 @@ class Website {
       const week = document.createElement("div");
       week.classList.add("week-page", "hidden");
       week.setAttribute("id", "weekPage");
-      week.appendChild(todoContainer.cloneNode(true))
+      week.appendChild(todoContainer.cloneNode(true));
 
       const projectPage = document.createElement("div");
       projectPage.classList.add("project-page", "hidden");
@@ -114,6 +127,37 @@ class Website {
       content.appendChild(projectPage);
 
       document.body.appendChild(content);
+    };
+
+    this.filterTodosByDueDate = function (dueDate, pageId) {
+      const todoItemContainer = document
+        .getElementById(pageId)
+        .querySelector(".todo-item-container");
+      todoItemContainer.innerHTML = "";
+
+      const filterTodos = handler.filterByDueDate(dueDate);
+      filterTodos.forEach((todo) => {
+        const todoItem = handler.createTodoItem(todo, todoItemContainer);
+        if (todo.isPriority) {
+          todoItem.classList.add("priority");
+        }
+        todoItemContainer.appendChild(todoItem);
+      });
+    };
+
+    this.showFilteredTodos = function (filterTodos, pageId) {
+      const todoItemContainer = document
+        .getElementById(pageId)
+        .querySelector(".todo-item-container");
+      todoItemContainer.innerHTML = "";
+
+      filterTodos.forEach((todo) => {
+        const todoItem = handler.createTodoItem(todo, todoItemContainer);
+        if (todo.isPriority) {
+          todoItem.classList.add("priority");
+        }
+        todoItemContainer.appendChild(todoItem);
+      });
     };
 
     this.showPage = function (pageId) {
