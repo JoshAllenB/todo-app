@@ -268,6 +268,78 @@ class Handler {
     });
   }
 
+  // ** Project Section ** //
+
+  createProject() {
+    const existingContainer = document.querySelector(".project-container");
+
+    if (existingContainer) {
+      return;
+    }
+
+    const projectBtn = document.getElementById("add-project");
+    const sideMenu = document.querySelector(".sideMenu");
+    projectBtn.addEventListener("click", () => {
+      const projContainer = document.createElement("div");
+      projContainer.classList.add("project-container");
+
+      const projInput = document.createElement("input");
+      projInput.type = "text";
+      projInput.placeholder = "Enter Project Name";
+      projInput.classList.add("project-input");
+
+      const submitBtn = document.createElement("button");
+      submitBtn.textContent = "Submit";
+      submitBtn.classList.add("submitBtn");
+
+      const cancelBtn = document.createElement("button");
+      cancelBtn.textContent = "Cancel";
+      cancelBtn.classList.add("cancelBtn");
+
+      projContainer.appendChild(projInput);
+      projContainer.appendChild(submitBtn);
+      projContainer.appendChild(cancelBtn);
+
+      const projectSection = sideMenu.querySelector(".project");
+      projectSection.appendChild(projContainer);
+
+      projectSection.insertBefore(projContainer, projectSection.childNodes[2]);
+
+      cancelBtn.addEventListener("click", () => {
+        projectSection.removeChild(projContainer);
+        projectBtn.disabled = false;
+      });
+
+      submitBtn.addEventListener("click", () => {
+        const projectName = projInput.value.trim();
+        if (projectName !== "") {
+          console.log("Project Submitted:", projectName);
+
+          const newProjBtn = this.createButton(projectName, projectName);
+          newProjBtn.classList.add("projName");
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "x";
+          deleteBtn.classList.add("deleteBtn");
+
+          newProjBtn.appendChild(deleteBtn);
+
+          const projectSection = document.querySelector(".project");
+          projectSection.insertBefore(newProjBtn, projectSection.childNodes[2]);
+
+          deleteBtn.addEventListener("click", () => {
+            projectSection.removeChild(newProjBtn);
+          })
+        } else {
+          alert("Please Enter a project name.");
+        }
+        projectSection.removeChild(projContainer);
+        projectBtn.disabled = false;
+      });
+      projectBtn.disabled = true;
+    });
+  }
+
   initHandler() {
     this.createTodoListForm();
   }

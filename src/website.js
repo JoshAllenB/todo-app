@@ -59,7 +59,7 @@ class Website {
       todayBtn.addEventListener("click", () => {
         this.showPage("todayPage");
         const today = new Date();
-        const filteredTodos = handler.filterByDueDate(today, null, true); // Pass includeTime as true
+        const filteredTodos = handler.filterByDueDate(today, null, true);
         this.showFilteredTodos(filteredTodos, "todayPage");
       });
       home.appendChild(todayBtn);
@@ -83,9 +83,13 @@ class Website {
         "+ Add Project",
         "add-project"
       );
-      addProjectBtn.addEventListener("click", () =>
-        this.showPage("projectPage")
-      );
+
+      addProjectBtn.addEventListener("click", () => {
+        this.showPage(projectPage);
+        handler.createProject.bind();
+        console.log("add project clicked");
+      });
+
       project.appendChild(addProjectBtn);
 
       sideMenu.appendChild(home);
@@ -164,6 +168,18 @@ class Website {
       const pages = document.querySelectorAll(".content > div:not(.sideMenu)");
       pages.forEach((page) => {
         page.classList.add("hidden");
+
+        if (pageId !== "projectPage") {
+          const projectSection = document.querySelector(".project");
+          const projContainer =
+            projectSection.querySelector(".project-container");
+
+          if (projContainer) {
+            projectSection.removeChild(projContainer);
+            const projectBtn = document.getElementById("add-project");
+            projectBtn.disabled = false;
+          }
+        }
       });
 
       const selectedPage = document.getElementById(pageId);
@@ -175,6 +191,7 @@ class Website {
     this.initWebsite = function () {
       this.createHeader();
       this.createContent();
+      handler.createProject();
       this.createFooter();
     };
   }

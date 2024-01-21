@@ -66,7 +66,7 @@ button.active {
 .sideMenu button:hover {
   color: black;
   background-color: #ffffff;
-  transition: all 0.1s ease-in;
+  transition: all 0.2s ease-in;
 }
 
 .home {
@@ -84,26 +84,6 @@ button.active {
 }
 
 .home h1 {
-  margin-bottom: 5%;
-  border-bottom: 3px solid #ffffff;
-}
-
-.project {
-  display: flex;
-  flex-direction: column;
-
-  width: 80%;
-  margin: 5%;
-  margin-top: 10%;
-  padding: 0;
-  list-style: none;
-  color: #fff;
-  backface-visibility: hidden;
-  border: 0.3rem solid transparent;
-  border-radius: 3rem;
-}
-
-.project h1 {
   margin-bottom: 5%;
   border-bottom: 3px solid #ffffff;
 }
@@ -157,7 +137,6 @@ button.active {
   border-bottom: 3px solid #5c5c5c;
   border-radius: 5px;
 }
-
 
 .todo-form button {
   border: 3px solid #10b10d;
@@ -292,6 +271,98 @@ input[type="checkbox"]:focus {
   background-color: #ffffff;
   text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #eeff00,
     0 0 30px #eeff00, 0 0 40px #eeff00, 0 0 55px #eeff00, 0 0 75px #eeff00;
+}
+
+/** PROJECT SECTION **/
+
+.project {
+  display: flex;
+  flex-direction: column;
+
+  width: 80%;
+  margin: 5%;
+  margin-top: 10%;
+  padding: 0;
+  list-style: none;
+  color: #fff;
+  backface-visibility: hidden;
+  border: 0.3rem solid transparent;
+  border-radius: 3rem;
+}
+
+#add-project {
+  margin-bottom: 20px;
+}
+
+.project h1 {
+  margin-bottom: 5%;
+  border-bottom: 3px solid #ffffff;
+}
+
+.project-container {
+  width: 100%;
+  height: 100%;
+  margin-bottom: 20px;
+}
+
+.project-container input {
+  width: 95%;
+  height: 1rem;
+  padding: 5px;
+  text-align: center;
+  outline: none;
+  border: none;
+  color: #171717;
+  background-color: #e9e5e5;
+}
+
+.project-container button {
+  outline: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: 50%;
+  height: 50%;
+  margin-top: 15px;
+  text-align: center;
+  border-radius: 7px;
+}
+
+.project-container .submitBtn:hover {
+  color: #fff;
+  background-color: #029600;
+  transform: scale(1.1);
+}
+
+.project-container .cancelBtn:hover {
+  color: #fff;
+  background-color: #b10d0d;
+  transform: scale(1.1);
+}
+
+.project .projName {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 0.2fr;
+  grid-template-rows: 0.2fr repeat(4, 0);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  place-items: center;
+  text-transform: uppercase;
+  border-radius: 6px;
+}
+
+.project .deleteBtn {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  text-align: center;
+}
+
+.project .deleteBtn:hover {
+  color: #fff;
+  background-color: #b10d0d;
 }
 
 footer {
