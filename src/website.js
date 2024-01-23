@@ -122,8 +122,6 @@ class Website {
       const projectPage = document.createElement("div");
       projectPage.classList.add("project-page", "hidden");
       projectPage.setAttribute("id", "projectPage");
-      projectPage.appendChild(formContainer.cloneNode(true));
-      projectPage.appendChild(todoContainer).cloneNode(true);
 
       content.appendChild(inbox);
       content.appendChild(today);
