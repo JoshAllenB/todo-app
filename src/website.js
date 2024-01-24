@@ -1,8 +1,10 @@
 import Handler from "./handler";
+import Project from "./project";
 
 class Website {
   constructor() {
     const handler = new Handler();
+    const projHandler = new Project();
 
     this.createHeader = function () {
       const header = document.createElement("header");
@@ -86,7 +88,6 @@ class Website {
 
       addProjectBtn.addEventListener("click", () => {
         this.showPage(projectPage);
-        handler.createProject.bind();
         console.log("add project clicked");
       });
 
@@ -177,7 +178,7 @@ class Website {
             const projectBtn = document.getElementById("add-project");
             projectBtn.disabled = false;
           }
-        }
+        } 
       });
 
       const selectedPage = document.getElementById(pageId);
@@ -189,7 +190,7 @@ class Website {
     this.initWebsite = function () {
       this.createHeader();
       this.createContent();
-      handler.createProject();
+      projHandler.createProject();
       this.createFooter();
     };
   }
