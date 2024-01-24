@@ -50,6 +50,8 @@ class Project {
         projectBtn.disabled = false;
       });
 
+      let btnContainerId;
+
       submitBtn.addEventListener("click", () => {
         const projectName = projInput.value.trim();
         if (projectName !== "") {
@@ -58,6 +60,12 @@ class Project {
           if (!this.projects[projectName]) {
             this.projects[projectName] = [];
           }
+
+          btnContainerId = `${projectName}-btn-container`;
+          const btnContainer = document.createElement("div");
+          btnContainer.classList.add(`${projectName}`, "btn-container");
+          btnContainer.setAttribute("id", btnContainerId);
+
           const newProjBtn = this.handler.createButton(
             projectName,
             projectName
@@ -68,13 +76,14 @@ class Project {
           deleteBtn.textContent = "x";
           deleteBtn.classList.add("deleteBtn");
 
-          newProjBtn.appendChild(deleteBtn);
+          btnContainer.appendChild(newProjBtn);
+          btnContainer.appendChild(deleteBtn);
 
           const projectSection = document.querySelector(".project");
-          projectSection.insertBefore(newProjBtn, projectSection.childNodes[2]);
+          projectSection.appendChild(btnContainer);
 
           deleteBtn.addEventListener("click", () => {
-            projectSection.removeChild(newProjBtn);
+            projectSection.removeChild(btnContainer);
 
             delete this.projects[projectName];
             const projectRemove = document.querySelector(
@@ -93,9 +102,20 @@ class Project {
           newProjBtn.addEventListener("click", () => {
             this.showProjectPage(projectName);
             const projectPage = document.getElementById("projectPage");
+            const inboxPage = document.getElementById("inboxPage");
+
             projectPage.classList.remove("hidden");
-            console.log("project page hidden");
+            inboxPage.classList.add("hidden");
           });
+
+          const inboxBtn = document.getElementById("inbox")
+          inboxBtn.addEventListener("click", () => {
+            const projectPage = document.getElementById("projectPage");
+            const inboxPage = document.getElementById("inboxPage");
+
+            inboxPage.classList.remove("hidden");
+            projectPage.classList.add("hidden");
+          })
         } else {
           alert("Please Enter a Project Name.");
         }
