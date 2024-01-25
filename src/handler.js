@@ -15,11 +15,6 @@ class Handler {
   }
 
   createTodoListForm(todoContainer) {
-    const existingForm = document.querySelector(".todo-form");
-    if (existingForm) {
-      return existingForm;
-    }
-
     const form = document.createElement("form");
     form.classList.add("todo-form");
 

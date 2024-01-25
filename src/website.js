@@ -51,8 +51,12 @@ class Website {
       const inboxBtn = handler.createButton("Inbox", "inbox");
       inboxBtn.addEventListener("click", () => {
         this.showPage("inboxPage");
-        const todoForm = handler.createTodoListForm();
-        inbox.querySelector(".form-container").appendChild(todoForm);
+        const formContainer = inbox.querySelector(".form-container");
+        if (!formContainer.querySelector(".todo-form")) {
+          const todoForm = handler.createTodoListForm();
+          formContainer.appendChild(todoForm);
+          console.log("Inbox Btn showing form");
+        } else console.log("form already created");
       });
 
       home.appendChild(inboxBtn);
@@ -178,7 +182,7 @@ class Website {
             const projectBtn = document.getElementById("add-project");
             projectBtn.disabled = false;
           }
-        } 
+        }
       });
 
       const selectedPage = document.getElementById(pageId);

@@ -101,6 +101,7 @@ class Project {
 
           newProjBtn.addEventListener("click", () => {
             this.showProjectPage(projectName);
+            this.handler.createTodoListForm(projectName);
             const projectPage = document.getElementById("projectPage");
             const inboxPage = document.getElementById("inboxPage");
 
@@ -108,14 +109,14 @@ class Project {
             inboxPage.classList.add("hidden");
           });
 
-          const inboxBtn = document.getElementById("inbox")
+          const inboxBtn = document.getElementById("inbox");
           inboxBtn.addEventListener("click", () => {
             const projectPage = document.getElementById("projectPage");
             const inboxPage = document.getElementById("inboxPage");
 
             inboxPage.classList.remove("hidden");
             projectPage.classList.add("hidden");
-          })
+          });
         } else {
           alert("Please Enter a Project Name.");
         }
@@ -127,15 +128,6 @@ class Project {
   }
 
   createProjectPage(projectName) {
-    const existingForm = document.getElementById("form-container");
-
-    if (existingForm) {
-      return existingForm;
-    }
-
-    const projectPage = document.getElementById("projectPage");
-    projectPage.innerHTML = "";
-
     const projContainer = document.createElement("div");
     projContainer.classList.add(`${projectName}`, "project-container");
 
@@ -143,7 +135,7 @@ class Project {
     formContainer.classList.add("form-container");
 
     const todoContainer = document.createElement("div");
-    todoContainer.classList.add("todo-item-container");
+    todoContainer.classList.add("project-item-container");
 
     const projectHeader = document.createElement("h3");
     projectHeader.textContent = projectName;
@@ -161,15 +153,28 @@ class Project {
       formContainer.appendChild(todoForm);
     }
 
-    projectPage.appendChild(projContainer);
     projContainer.appendChild(projectHeader);
     projContainer.appendChild(formContainer);
     projContainer.appendChild(todoContainer);
+
+    return projContainer;
   }
 
   showProjectPage(projectName) {
     console.log("showing project", projectName);
-    this.createProjectPage(projectName);
+    const allProjectContainer = document.querySelectorAll(".project-container");
+    allProjectContainer.forEach(container => {
+      container.classList.add("hidden");
+    });
+
+    const selectedProjectContainer = document.querySelector(`.${projectName}.project-container`);
+    if (selectedProjectContainer) {
+      selectedProjectContainer.classList.remove("hidden");
+    } else {
+      const projectContainer = this.createProjectPage(projectName);
+      const projectPage = document.getElementById("projectPage");
+      projectPage.appendChild(projectContainer);
+    }
   }
 }
 
