@@ -71,6 +71,7 @@ class Handler {
   createTodoItem(todo, inboxContainer) {
     const todoItem = document.createElement("div");
     todoItem.classList.add("todo-item");
+    todoItem.classList.add(`todo-id-${todo.id}`);
     todoItem.setAttribute("data-todo-id", todo.id);
 
     console.log("Creating todo item:", todo);
@@ -197,6 +198,10 @@ class Handler {
     const index = this.todos.indexOf(todo);
     if (index !== -1) {
       this.todos.splice(index, 1);
+      const todoItem = document.querySelector(`.todo-id-${todo.id}`);
+      if (todoItem) {
+        todoItem.remove();
+      }
     }
   }
 
