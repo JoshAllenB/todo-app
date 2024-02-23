@@ -1,202 +1,178 @@
 import Handler from "./handler";
+import Todo from "./todo";
 import Project from "./project";
 
 class Website {
   constructor() {
-    const handler = new Handler();
-    const projHandler = new Project();
+    this.todo = new Todo();
+    this.handler = new Handler();
+    this.project = new Project();
+    this.formCreated = false;
+    this.currentPage = "";
+    this.currentVisibleContainer = null;
+  }
 
-    this.createHeader = function () {
-      const header = document.createElement("header");
-      const title = document.createElement("h1");
-      title.textContent = "To-Do List";
+  createHeader() {
+    const header = document.createElement("header");
+    const title = document.createElement("h1");
+    title.textContent = "To-Do List";
 
-      header.appendChild(title);
-      document.body.appendChild(header);
-    };
+    header.appendChild(title);
+    document.body.appendChild(header);
+  }
 
-    this.createFooter = function () {
-      const footer = document.createElement("footer");
-      const footerLink = document.createElement("div");
-      footerLink.classList.add("link");
+  createContent() {
+    const content = document.createElement("div");
+    content.classList.add("content");
+    content.setAttribute("id", "mainContent");
 
-      const copyright = this.createFooterLink(
-        'Copyright <i class="fa-regular fa-copyright"></i> JoshAllen'
-      );
+    const inbox = document.createElement("div");
+    inbox.classList.add("inboxContainer", "hidden");
 
-      footerLink.appendChild(copyright);
-      footer.appendChild(footerLink);
-      document.body.appendChild(footer);
-    };
+    const today = document.createElement("div");
+    today.classList.add("todayContainer", "hidden");
 
-    this.createFooterLink = function (text) {
-      const link = document.createElement("h1");
-      link.innerHTML = text;
+    const week = document.createElement("div");
+    week.classList.add("weekContainer", "hidden");
 
-      return link;
-    };
+    const projectTodo = document.createElement("div");
+    projectTodo.classList.add("projectContainer", "hidden");
 
-    this.createContent = function () {
-      const content = document.createElement("div");
-      content.classList.add("content");
-      content.setAttribute("id", "mainContent");
+    content.appendChild(inbox);
+    content.appendChild(today);
+    content.appendChild(week);
+    content.appendChild(projectTodo);
+    document.body.appendChild(content);
 
-      const sideMenu = document.createElement("div");
-      sideMenu.classList.add("sideMenu");
+    return content;
+  }
 
-      const home = document.createElement("div");
-      home.classList.add("home");
-      home.innerHTML = "<h1>Home</h1>";
+  showContainer(container) {
+    if (this.currentVisibleContainer) {
+      this.currentVisibleContainer.classList.add("hidden");
+    }
+    container.classList.remove("hidden");
+    this.currentVisibleContainer = container;
 
-      const inboxBtn = handler.createButton("Inbox", "inbox");
-      inboxBtn.addEventListener("click", () => {
-        this.showPage("inboxPage");
-        const formContainer = inbox.querySelector(".form-container");
-        if (!formContainer.querySelector(".todo-form")) {
-          const todoForm = handler.createTodoListForm();
-          formContainer.appendChild(todoForm);
-          console.log("Inbox Btn showing form");
-        } else console.log("form already created");
-      });
+    console.log("using showContainer in website");
+  }
 
-      home.appendChild(inboxBtn);
-
-      const todayBtn = handler.createButton("Today", "today");
-      todayBtn.addEventListener("click", () => {
-        this.showPage("todayPage");
-        const today = new Date();
-        const filteredTodos = handler.filterByDueDate(today, null, true);
-        this.showFilteredTodos(filteredTodos, "todayPage");
-      });
-      home.appendChild(todayBtn);
-
-      const thisWeekBtn = handler.createButton("This Week", "this-week");
-      thisWeekBtn.addEventListener("click", () => {
-        const today = new Date();
-        const nextWeek = new Date(today);
-        nextWeek.setDate(today.getDate() + 7);
-
-        this.showPage("weekPage");
-        const filteredTodos = handler.filterByDueDate(today, nextWeek);
-        this.showFilteredTodos(filteredTodos, "weekPage");
-      });
-      home.appendChild(thisWeekBtn);
-
-      const project = document.createElement("div");
-      project.classList.add("project");
-      project.innerHTML = "<h1>Project</h1>";
-      const addProjectBtn = handler.createButton(
-        "+ Add Project",
-        "add-project"
-      );
-
-      addProjectBtn.addEventListener("click", () => {
-        this.showPage(projectPage);
-        console.log("add project clicked");
-      });
-
-      project.appendChild(addProjectBtn);
-
-      sideMenu.appendChild(home);
-      sideMenu.appendChild(project);
-      content.appendChild(sideMenu);
-
-      const inbox = document.createElement("div");
-      inbox.classList.add("inbox-page", "hidden");
-      inbox.setAttribute("id", "inboxPage");
-
-      const formContainer = document.createElement("div");
-      formContainer.classList.add("form-container");
-
-      const todoContainer = document.createElement("div");
-      todoContainer.classList.add("todo-item-container");
-
-      inbox.appendChild(formContainer.cloneNode(true));
-      inbox.appendChild(todoContainer.cloneNode(true));
-
-      const today = document.createElement("div");
-      today.classList.add("today-page", "hidden");
-      today.setAttribute("id", "todayPage");
-      today.appendChild(todoContainer.cloneNode(true));
-
-      const week = document.createElement("div");
-      week.classList.add("week-page", "hidden");
-      week.setAttribute("id", "weekPage");
-      week.appendChild(todoContainer.cloneNode(true));
-
-      const projectPage = document.createElement("div");
-      projectPage.classList.add("project-page", "hidden");
-      projectPage.setAttribute("id", "projectPage");
-
-      content.appendChild(inbox);
-      content.appendChild(today);
-      content.appendChild(week);
-      content.appendChild(projectPage);
-
-      document.body.appendChild(content);
-    };
-
-    this.filterTodosByDueDate = function (dueDate, pageId) {
-      const todoItemContainer = document
-        .getElementById(pageId)
-        .querySelector(".todo-item-container");
-      todoItemContainer.innerHTML = "";
-
-      const filterTodos = handler.filterByDueDate(dueDate);
-      filterTodos.forEach((todo) => {
-        const todoItem = handler.createTodoItem(todo, todoItemContainer);
-        if (todo.isPriority) {
-          todoItem.classList.add("priority");
-        }
-        todoItemContainer.appendChild(todoItem);
-      });
-    };
-
-    this.showFilteredTodos = function (filterTodos, pageId) {
-      const todoItemContainer = document
-        .getElementById(pageId)
-        .querySelector(".todo-item-container");
-      todoItemContainer.innerHTML = "";
-
-      filterTodos.forEach((todo) => {
-        const todoItem = handler.createTodoItem(todo, todoItemContainer);
-        if (todo.isPriority) {
-          todoItem.classList.add("priority");
-        }
-        todoItemContainer.appendChild(todoItem);
-      });
-    };
-
-    this.showPage = function (pageId) {
-      const pages = document.querySelectorAll(".content > div:not(.sideMenu)");
-      pages.forEach((page) => {
-        page.classList.add("hidden");
-
-        if (pageId !== "projectPage") {
-          const projectSection = document.querySelector(".project");
-          const projContainer =
-            projectSection.querySelector(".project-container");
-
-          if (projContainer) {
-            projectSection.removeChild(projContainer);
-            const projectBtn = document.getElementById("add-project");
-            projectBtn.disabled = false;
-          }
-        }
-      });
-
-      const selectedPage = document.getElementById(pageId);
-      if (selectedPage) {
-        selectedPage.classList.remove("hidden");
+  activeButton(button) {
+    const buttons = document.querySelectorAll(".sideMenu button");
+    buttons.forEach((btn) => {
+      if (btn !== button) {
+        btn.classList.remove("active");
       }
-    };
+    });
 
-    this.initWebsite = function () {
-      this.createHeader();
-      this.createContent();
-      projHandler.createProject();
-      this.createFooter();
-    };
+    button.classList.add("active");
+  }
+
+  createSideMenu() {
+    const content = this.createContent();
+
+    const sideMenu = document.createElement("div");
+    sideMenu.classList.add("sideMenu");
+
+    const home = document.createElement("div");
+    home.classList.add("home");
+    home.innerHTML = "<h1>Home</h1>";
+
+    const inboxBtn = this.handler.createButton("Inbox", "inbox");
+    inboxBtn.addEventListener("click", (event) => {
+      const inbox = document.querySelector(".inboxContainer");
+      this.showContainer(inbox);
+      this.activeButton(event.currentTarget);
+
+      if (!this.formCreated) {
+        const container = document.querySelector(".inboxContainer");
+        const form = this.todo.createTodoListForm();
+
+        container.appendChild(form);
+
+        this.formCreated = true;
+      }
+    });
+
+    const todayBtn = this.handler.createButton("Today", "today");
+    todayBtn.addEventListener("click", (event) => {
+      const today = document.querySelector(".todayContainer");
+      this.showContainer(today);
+      this.activeButton(event.currentTarget);
+    });
+
+    const weekBtn = this.handler.createButton("This Week", "thisWeek");
+    weekBtn.addEventListener("click", (event) => {
+      const week = document.querySelector(".weekContainer");
+      this.showContainer(week);
+      this.activeButton(event.currentTarget);
+    });
+
+    const project = document.createElement("div");
+    project.classList.add("project");
+    project.innerHTML = "<h1>Project</h1>";
+
+    const projectList = document.createElement("div");
+    projectList.classList.add("projectList");
+
+    const addProject = this.handler.createButton("+ Add Project", "addProj");
+    addProject.addEventListener("click", (event) => {
+      const projectContainer = document.querySelector(".projectContainer");
+      this.showContainer(projectContainer);
+      this.project.createProjectName();
+    });
+
+    document.addEventListener("click", (event) => {
+      const projBtn = event.target.closest(".projBtn");
+      if (projBtn) {
+        const projectContainer = document.querySelector(".projectContainer");
+        this.showContainer(projectContainer);
+      }
+      const projectBtn = event.target.closest(".projectBtn");
+      if (projectBtn) {
+        this.activeButton(projectBtn);
+      }
+    });
+
+    sideMenu.appendChild(home);
+    sideMenu.appendChild(inboxBtn);
+    sideMenu.appendChild(todayBtn);
+    sideMenu.appendChild(weekBtn);
+    sideMenu.appendChild(project);
+    project.appendChild(addProject);
+    project.appendChild(projectList);
+
+    const firstContainer = content.querySelector(":scope > div");
+    this.showContainer(firstContainer, "hidden");
+
+    content.insertBefore(sideMenu, content.firstChild);
+  }
+
+  createFooter() {
+    const footer = document.createElement("footer");
+    const footerLink = document.createElement("div");
+    footerLink.classList.add("link");
+
+    const copyright = this.createFooterLink(
+      'Copyright <i class="fa-regular fa-copyright"></i> JoshAllen'
+    );
+
+    footerLink.appendChild(copyright);
+    footer.appendChild(footerLink);
+    document.body.appendChild(footer);
+  }
+
+  createFooterLink(text) {
+    const link = document.createElement("h1");
+    link.innerHTML = text;
+
+    return link;
+  }
+
+  initWebsite() {
+    this.createHeader();
+    this.createSideMenu();
+    this.createFooter();
   }
 }
 
