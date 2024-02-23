@@ -2,179 +2,307 @@ import Handler from "./handler";
 
 class Project {
   constructor() {
-    this.projects = {};
-    this.selectedProject = null;
     this.handler = new Handler();
+    this.projects = {};
+    this.projectIdCounter = 0;
+    this.projectContainer = null;
   }
 
-  createProject() {
-    const projectBtn = document.getElementById("add-project");
-    const sideMenu = document.querySelector(".sideMenu");
+  /* 
+  TODO For the project:
+  ! Fix the creating todoItem, it does not create todoItem on different div/container
+  ! Create a logic where it checks which container is active for the addBtn in the form.
+  * Try the subArray approach for each project created add logic to access that subArray for each project.
+  * if above does not work, simplify the code, no need to create todo in the project
+  * use inbox input field to create todoItem for the project.
+  */
 
-    const existingContainer = sideMenu.querySelector(".input-container");
-    if (existingContainer) {
-      return;
-    }
+  setProjectContainer(container) {
+    this.projectContainer = container;
+  }
 
-    projectBtn.addEventListener("click", () => {
-      const projInputContainer = document.createElement("div");
-      projInputContainer.classList.add("input-container");
+  createProjectName() {
+    const project = document.querySelector(".project");
+    const projList = document.querySelector(".projectList");
 
-      const projInput = document.createElement("input");
-      projInput.type = "text";
-      projInput.placeholder = "Enter Project Name";
-      projInput.classList.add("project-input");
+    let formContainer = document.querySelector(".projFormContainer");
+    let todoFormCreated = false;
 
-      const submitBtn = document.createElement("button");
-      submitBtn.textContent = "Submit";
-      submitBtn.classList.add("submitBtn");
+    if (!formContainer) {
+      formContainer = document.createElement("div");
+      formContainer.classList.add("projFormContainer");
 
-      const cancelBtn = document.createElement("button");
-      cancelBtn.textContent = "Cancel";
-      cancelBtn.classList.add("cancelBtn");
+      const projectForm = document.createElement("form");
+      projectForm.classList.add("projForm");
 
-      projInputContainer.appendChild(projInput);
-      projInputContainer.appendChild(submitBtn);
-      projInputContainer.appendChild(cancelBtn);
+      const projName = this.handler.createInput("text", "Project Name");
+      projName.classList.add("projName");
 
-      const projectSection = sideMenu.querySelector(".project");
-      projectSection.appendChild(projInputContainer);
+      const btnContainer = document.createElement("div");
+      btnContainer.classList.add("btnContainer");
 
-      projectSection.insertBefore(
-        projInputContainer,
-        projectSection.childNodes[2]
-      );
+      const submit = this.handler.createButton("Submit", "submitProj");
 
-      cancelBtn.addEventListener("click", () => {
-        projectSection.removeChild(projInputContainer);
-        projectBtn.disabled = false;
-      });
+      const cancel = this.handler.createButton("Cancel", "cancelProj");
 
-      let btnContainerId;
+      projectForm.appendChild(projName);
+      btnContainer.appendChild(submit);
+      btnContainer.appendChild(cancel);
+      formContainer.appendChild(projectForm);
+      formContainer.appendChild(btnContainer);
 
-      submitBtn.addEventListener("click", () => {
-        const projectName = projInput.value.trim();
+      submit.addEventListener("click", (event) => {
+        event.preventDefault();
+        const projectName = projName.value.trim();
         if (projectName !== "") {
-          console.log("Project Submitted:", projectName);
+          let projBtn = document.getElementById(projectName);
 
-          if (!this.projects[projectName]) {
-            this.projects[projectName] = [];
+          if (!projBtn) {
+            projBtn = document.createElement("div");
+            projBtn.classList.add("projBtn");
+            projBtn.id = projectName;
+
+            projBtn.addEventListener("click", () => {
+              if (!todoFormCreated) {
+                this.showProjectForm(projectName);
+                this.createProjectTodoForm(projectName);
+                todoFormCreated = true;
+                console.log("project btn clicked");
+              } else {
+                this.hideProjectForm();
+                this.showProjectForm(projectName);
+              }
+            });
+            projList.appendChild(projBtn);
           }
 
-          btnContainerId = `${projectName}-btn-container`;
-          const btnContainer = document.createElement("div");
-          btnContainer.classList.add(`${projectName}`, "btn-container");
-          btnContainer.setAttribute("id", btnContainerId);
+          const projectButton = document.createElement("button");
+          projectButton.textContent = projectName;
+          projectButton.classList.add("projectBtn");
+          projectButton.id = projectName;
 
-          const newProjBtn = this.handler.createButton(
-            projectName,
-            projectName
-          );
-          newProjBtn.classList.add("projName");
+          const deleteProj = this.handler.createButton("X", "deleteBtn");
 
-          const deleteBtn = document.createElement("button");
-          deleteBtn.textContent = "x";
-          deleteBtn.classList.add("deleteBtn");
+          deleteProj.addEventListener("click", () => {
+            projBtn.remove();
 
-          btnContainer.appendChild(newProjBtn);
-          btnContainer.appendChild(deleteBtn);
+            const todoFormContainer = document.getElementById(
+              `${projectName}-form`
+            );
 
-          const projectSection = document.querySelector(".project");
-          projectSection.appendChild(btnContainer);
-
-          deleteBtn.addEventListener("click", () => {
-            projectSection.removeChild(btnContainer);
+            if (todoFormContainer) {
+              todoFormContainer.remove();
+            }
 
             delete this.projects[projectName];
-            const projectRemove = document.querySelector(
-              `.${projectName}.project-container`
-            );
-            if (projectRemove) {
-              console.log("removing project container:", projectRemove);
-              projectRemove.remove();
-            } else {
-              console.log("No matching project container", projectName);
-            }
           });
 
-          this.selectedProject = projectName;
+          projBtn.appendChild(projectButton);
+          projBtn.appendChild(deleteProj);
 
-          newProjBtn.addEventListener("click", () => {
-            this.showProjectPage(projectName);
-            this.handler.createTodoListForm(projectName);
-            const projectPage = document.getElementById("projectPage");
-            const inboxPage = document.getElementById("inboxPage");
-
-            projectPage.classList.remove("hidden");
-            inboxPage.classList.add("hidden");
-          });
-
-          const inboxBtn = document.getElementById("inbox");
-          inboxBtn.addEventListener("click", () => {
-            const projectPage = document.getElementById("projectPage");
-            const inboxPage = document.getElementById("inboxPage");
-
-            inboxPage.classList.remove("hidden");
-            projectPage.classList.add("hidden");
-          });
-        } else {
-          alert("Please Enter a Project Name.");
+          formContainer.remove();
         }
-        projectSection.removeChild(projInputContainer);
-        projectBtn.disabled = false;
       });
-      projectBtn.disabled = true;
-    });
+
+      cancel.addEventListener("click", (event) => {
+        event.preventDefault();
+        formContainer.remove();
+      });
+
+      project.appendChild(formContainer);
+    }
   }
 
-  createProjectPage(projectName) {
-    const projContainer = document.createElement("div");
-    projContainer.classList.add(`${projectName}`, "project-container");
-
-    const formContainer = document.createElement("div");
-    formContainer.classList.add("form-container");
-
-    const todoContainer = document.createElement("div");
-    todoContainer.classList.add("project-item-container");
-
-    const projectHeader = document.createElement("h3");
-    projectHeader.textContent = projectName;
-    formContainer.appendChild(projectHeader);
-
-    const todoItems = this.projects[projectName] || [];
-
-    todoItems.forEach((todo) => {
-      const todoItem = this.handler.createTodoItem(todo);
-      todoContainer.appendChild(todoItem);
+  showProjectForm(projectName) {
+    const allTodoForms = document.querySelectorAll(".projectTodoContainer");
+    allTodoForms.forEach((form) => {
+      form.classList.add("hidden");
     });
 
-    const todoForm = this.handler.createTodoListForm(todoContainer);
+    const todoForm = document.getElementById(`${projectName}-form`);
     if (todoForm) {
-      formContainer.appendChild(todoForm);
+      todoForm.classList.remove("hidden");
     }
-
-    projContainer.appendChild(projectHeader);
-    projContainer.appendChild(formContainer);
-    projContainer.appendChild(todoContainer);
-
-    return projContainer;
   }
 
-  showProjectPage(projectName) {
-    console.log("showing project", projectName);
-    const allProjectContainer = document.querySelectorAll(".project-container");
-    allProjectContainer.forEach(container => {
-      container.classList.add("hidden");
+  hideProjectForm() {
+    const allTodoForm = document.querySelectorAll(".projectTodoContainer");
+    allTodoForm.forEach((form) => {
+      form.classList.add("hidden");
+    });
+  }
+
+  createProjectTodoForm(projectName) {
+    const projectContainer = document.querySelector(".projectContainer");
+    const todoFormContainerId = `${projectName}-form`;
+
+    let todoFormContainer = document.getElementById(todoFormContainerId);
+
+    if (!todoFormContainer) {
+      todoFormContainer = document.createElement("div");
+      todoFormContainer.classList.add("projectTodoContainer");
+      todoFormContainer.id = todoFormContainerId;
+
+      const todoContainer = this.handler.createTodoContainer();
+
+      const itemContainer = this.handler.createItemContainer();
+      itemContainer.id = `${projectName}-itemContainer`;
+
+      const formContainer = document.createElement("div");
+      formContainer.classList.add("formContainer");
+
+      const form = document.createElement("form");
+      form.classList.add("todo-form");
+      form.id = `${projectName}-form`;
+
+      const nameInput = this.handler.createInput("text", "Todo Name", true);
+      nameInput.classList.add("name-input");
+      nameInput.id = `${projectName}-input`;
+
+      const dateInput = this.handler.createInput("date", "", true);
+      dateInput.classList.add("date-input");
+      dateInput.id = `${projectName}-date-input`;
+
+      const addBtn = this.handler.createButton("Add Todo", "addBtn");
+      addBtn.classList.add("addBtn");
+      addBtn.id = `${projectName}-addBtn`;
+      addBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.createProjectTodo(projectName);
+        console.log(this.projectTodo);
+      });
+
+      form.appendChild(nameInput);
+      form.appendChild(dateInput);
+      form.appendChild(addBtn);
+      formContainer.appendChild(form);
+      todoContainer.appendChild(formContainer);
+      todoContainer.appendChild(itemContainer);
+
+      todoFormContainer.appendChild(todoContainer);
+
+      projectContainer.appendChild(todoFormContainer);
+    }
+
+    if (!this.projects[projectName]) {
+      this.projects[projectName] = [];
+    }
+
+    return todoFormContainer;
+  }
+
+  createProjectTodo(projectName) {
+    const nameInput = document.querySelector(`#${projectName}-input`);
+    const dateInput = document.querySelector(`#${projectName}-date-input`);
+
+    const projectTodo = {
+      id: this.projectIdCounter++,
+      name: nameInput.value,
+      proj: projectName,
+      date: dateInput.value,
+    };
+
+    if (!this.projects[projectName]) {
+      this.projects[projectName] = [];
+    }
+
+    this.projects[projectName].push(projectTodo);
+    this.projects[projectName].sort((a, b) => {
+      return new Date(a.date) - new Date(b.date);
+    });
+    console.log(this.projects[projectName]);
+
+    nameInput.value = "";
+    dateInput.value = "";
+
+    const itemContainer = document.getElementById(
+      `${projectName}-itemContainer`
+    );
+
+    if (itemContainer) {
+      itemContainer.innerHTML = "";
+
+      this.projects[projectName].forEach((todo) => {
+        this.createProjectTodoItem(todo, projectName);
+      });
+    } else {
+      console.error(
+        "Item Container with ID ${projectName}-itemContainer not found"
+      );
+    }
+  }
+
+  createProjectTodoItem(todo, projectName) {
+    const nameLabel = document.createElement("h5");
+    const dateLabel = document.createElement("h5");
+
+    const todoItem = document.createElement("li");
+    todoItem.classList.add(`todo-${todo.id}`, "todoItem");
+
+    const checkboxContainer = this.handler.createCheckboxContainer(todo);
+    const checkbox = checkboxContainer.querySelector("input[type='checkbox']");
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) {
+        setTimeout(() => {
+          this.removeTodoItem(todo.id);
+        }, 500);
+      }
     });
 
-    const selectedProjectContainer = document.querySelector(`.${projectName}.project-container`);
-    if (selectedProjectContainer) {
-      selectedProjectContainer.classList.remove("hidden");
-    } else {
-      const projectContainer = this.createProjectPage(projectName);
-      const projectPage = document.getElementById("projectPage");
-      projectPage.appendChild(projectContainer);
+    nameLabel.textContent = todo.name;
+    dateLabel.textContent = todo.date;
+
+    const priorityIcon = this.handler.createPriorityIcon(todo, todoItem);
+    priorityIcon.addEventListener("click", () => {
+      this.togglePriority(todo.id);
+    });
+
+    todoItem.appendChild(checkboxContainer);
+    todoItem.appendChild(nameLabel);
+    todoItem.appendChild(dateLabel);
+    todoItem.appendChild(priorityIcon);
+
+    const itemContainer = document.getElementById(
+      `${projectName}-itemContainer`
+    );
+
+    itemContainer.appendChild(todoItem);
+    console.log(itemContainer);
+    console.log(this.projects);
+  }
+
+  removeTodoItem(todoId, projectName) {
+    const index = this.projects[projectName].findIndex(
+      (item) => item.id === todoId
+    );
+    if (index !== -1) {
+      this.projects[projectName].splice(index, 1);
+      this.reorderTodo(projectName);
     }
+  }
+
+  togglePriority(todoId) {
+    const todo = this.projectTodo.find((item) => item.id === todoId);
+    if (todo) {
+      todo.priority = !todo.priority;
+      this.reorderTodo();
+    }
+  }
+
+  reorderTodo(projectName) {
+    this.projectTodo.sort((a, b) => {
+      if (a.priority && !b.priority) return -1;
+      if (!a.priority && b.priority) return 1;
+
+      return new Date(a.date) - new Date(b.date);
+    });
+
+    const itemContainer = document.querySelector(".itemContainer");
+    itemContainer.innerHTML = "";
+
+    this.projectTodo.forEach((todo) => {
+      this.createProjectTodoItem(todo, projectName);
+    });
   }
 }
 
