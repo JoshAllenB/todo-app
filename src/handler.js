@@ -72,8 +72,6 @@ class Handler {
       todo.isPriority = !todo.isPriority;
       priorityIcon.classList.toggle("fa-regular", !todo.isPriority);
       priorityIcon.classList.toggle("fa-solid", todo.isPriority);
-      console.log("priority icon clicked");
-      console.log("Updated todo:", todo);
 
       this.updatePriorityIcon(todo);
 

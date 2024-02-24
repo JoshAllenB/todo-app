@@ -54,7 +54,6 @@ class Website {
     container.classList.remove("hidden");
     this.currentVisibleContainer = container;
 
-    console.log("using showContainer in website");
   }
 
   activeButton(button) {
