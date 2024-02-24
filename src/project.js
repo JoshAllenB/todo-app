@@ -169,7 +169,7 @@ class Project {
       addBtn.addEventListener("click", (event) => {
         event.preventDefault();
         this.createProjectTodo(projectName);
-        console.log(this.projectTodo);
+        console.log(this.projects[projectName]);
       });
 
       form.appendChild(nameInput);
@@ -244,7 +244,7 @@ class Project {
     checkbox.addEventListener("change", () => {
       if (checkbox.checked) {
         setTimeout(() => {
-          this.removeTodoItem(todo.id);
+          this.removeTodoItem(todo.id, projectName);
         }, 500);
       }
     });
@@ -254,7 +254,7 @@ class Project {
 
     const priorityIcon = this.handler.createPriorityIcon(todo, todoItem);
     priorityIcon.addEventListener("click", () => {
-      this.togglePriority(todo.id);
+      this.togglePriority(todo.id, projectName);
     });
 
     todoItem.appendChild(checkboxContainer);
@@ -272,37 +272,47 @@ class Project {
   }
 
   removeTodoItem(todoId, projectName) {
-    const index = this.projects[projectName].findIndex(
-      (item) => item.id === todoId
-    );
-    if (index !== -1) {
-      this.projects[projectName].splice(index, 1);
-      this.reorderTodo(projectName);
+    const projectTodos = this.projects[projectName];
+    if (projectTodos) {
+      const index = projectTodos.findIndex((item) => item.id === todoId);
+      if (index !== -1) {
+        projectTodos.splice(index, 1);
+        this.reorderTodo(projectName);
+      }
     }
   }
 
-  togglePriority(todoId) {
-    const todo = this.projectTodo.find((item) => item.id === todoId);
-    if (todo) {
-      todo.priority = !todo.priority;
-      this.reorderTodo();
+  togglePriority(todoId, projectName) {
+    const projectTodos = this.projects[projectName];
+    if (projectTodos) {
+      const todo = projectTodos.find((item) => item.id === todoId);
+      if (todo) {
+        todo.priority = !todo.priority;
+        this.reorderTodo(projectName);
+        console.log("priority toggled");
+      }
     }
   }
 
   reorderTodo(projectName) {
-    this.projectTodo.sort((a, b) => {
-      if (a.priority && !b.priority) return -1;
-      if (!a.priority && b.priority) return 1;
+    if (this.projects[projectName]) {
+      this.projects[projectName].sort((a, b) => {
+        if (a.priority === b.priority) {
+          return new Date(a.date) - new Date(b.date);
+        }
+        // If only one has priority, prioritize it
+        return a.priority ? -1 : 1;
+      });
 
-      return new Date(a.date) - new Date(b.date);
-    });
+      const itemContainer = document.getElementById(
+        `${projectName}-itemContainer`
+      );
+      itemContainer.innerHTML = "";
 
-    const itemContainer = document.querySelector(".itemContainer");
-    itemContainer.innerHTML = "";
-
-    this.projectTodo.forEach((todo) => {
-      this.createProjectTodoItem(todo, projectName);
-    });
+      this.projects[projectName].forEach((todo) => {
+        this.createProjectTodoItem(todo, projectName);
+      });
+    }
   }
 }
 
