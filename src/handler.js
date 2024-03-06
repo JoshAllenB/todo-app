@@ -37,20 +37,19 @@ class Handler {
     return itemContainer;
   }
 
+  createFilteredContainer() {
+    const filteredTodo = document.createElement("div");
+    filteredTodo.classList.add("filteredContainer");
+
+    return filteredTodo;
+  }
+
   createCheckboxContainer(todo) {
     const checkboxContainer = document.createElement("div");
     checkboxContainer.classList.add("checkbox-container");
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.addEventListener("change", () => {
-      if (checkbox.checked) {
-        setTimeout(() => {
-          this.removeTodoFromList(todo);
-          console.log("checkbox clicked");
-        }, 500);
-      }
-    });
 
     const checkmarkSpan = document.createElement("span");
     checkmarkSpan.classList.add("checkmark");
@@ -99,62 +98,6 @@ class Handler {
           priorityIcon.classList.toggle("fa-regular", !todo.isPriority);
           priorityIcon.classList.toggle("fa-solid", todo.isPriority);
         }
-      }
-    });
-  }
-
-  removeTodoFromList(todo) {
-    const index = this.todo.indexOf(todo);
-    if (index !== -1) {
-      this.todo.splice(index, 1);
-      const todoItem = document.querySelector(`.todo-id-${todo.id}`);
-      if (todoItem) {
-        todoItem.remove();
-      }
-    }
-  }
-
-  clearList(container) {
-    const itemContainer = container.querySelector(".itemContainer");
-    if (itemContainer) {
-      while (itemContainer.firstChild) {
-        itemContainer.removeChild(itemContainer.firstChild);
-      }
-    }
-  }
-
-  filterByDueDate(startDate, endDate, includeTime = false) {
-    const startOfDate = new Date(
-      startDate.getFullYear(),
-      startDate.getMonth(),
-      startDate.getDate()
-    );
-
-    const endOfDate = endDate
-      ? new Date(
-          endDate.getFullYear(),
-          endDate.getMonth(),
-          endDate.getDate(),
-          23,
-          59,
-          58
-        )
-      : new Date(
-          startOfDate.getFullYear(),
-          startOfDate.getMonth(),
-          startOfDate.getDate(),
-          23,
-          59,
-          59
-        );
-
-    return this.todo.filter((todo) => {
-      const todoDueDate = new Date(todo.date);
-
-      if (includeTime) {
-        return todoDueDate >= startOfDate && todoDueDate <= endOfDate;
-      } else {
-        return todoDueDate >= startOfDate && todoDueDate <= endOfDate;
       }
     });
   }
