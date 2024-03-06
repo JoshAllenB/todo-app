@@ -6,21 +6,74 @@ class Project {
     this.projects = {};
     this.projectIdCounter = 0;
     this.projectContainer = null;
+    document.addEventListener("DOMContentLoaded", () => {
+      this.loadProjects();
+      this.loadTodos();
+    });
   }
 
-  /* 
-  TODO For the project:
-  ! Fix the creating todoItem, it does not create todoItem on different div/container
-  ! Create a logic where it checks which container is active for the addBtn in the form.
-  * Try the subArray approach for each project created add logic to access that subArray for each project.
-  * if above does not work, simplify the code, no need to create todo in the project
-  * use inbox input field to create todoItem for the project.
-  */
+  /**
+   * Load the projects from local storage and display them in the UI.
+   */
+  loadProjects() {
+    const projectsData = JSON.parse(localStorage.getItem("projects")) || {};
+    this.projects = projectsData;
 
+    this.recreateProjectButton();
+
+    for (const projectName in this.projects) {
+      if (this.projects.hasOwnProperty(projectName)) {
+        /**
+         * Get the project data and create the todo form container for the project.
+         * @param {string} projectName - The name of the project
+         */
+        const projectData = this.projects[projectName];
+        const todoFormContainer = this.createProjectTodoForm(projectName);
+        const itemContainer = todoFormContainer.querySelector(".itemContainer");
+
+        /**
+         * Loop through the project data and create a todo item for each todo.
+         * @param {Object} todo - The todo object
+         * @param {string} projectName - The name of the project
+         * @param {HTMLElement} itemContainer - The item container element
+         */
+        projectData.forEach((todo) => {
+          this.createProjectTodoItem(todo, projectName, itemContainer);
+        });
+      }
+    }
+  }
+
+  /**
+   * Load the todos from local storage and display them in the UI.
+   */
+  loadTodos() {
+    const storedTodos = JSON.parse(localStorage.getItem("todos")) || {};
+
+    Object.keys(storedTodos).forEach((projectName) => {
+      if (this.projects[projectName]) {
+        // Check if the project exists
+        this.projects[projectName] = storedTodos[projectName]; // Update project todos
+        this.projects[projectName].forEach((todo) => {
+          this.createProjectTodoItem(todo, projectName);
+        });
+      } else {
+        this.projects[projectName] = storedTodos[projectName]; // Add project with its todos
+      }
+    });
+  }
+
+  /**
+   * Set the project container element
+   * @param {HTMLElement} container - The project container element
+   */
   setProjectContainer(container) {
     this.projectContainer = container;
   }
 
+  /**
+   * Creates a new project name input element
+   */
   createProjectName() {
     const project = document.querySelector(".project");
     const projList = document.querySelector(".projectList");
@@ -51,6 +104,10 @@ class Project {
       formContainer.appendChild(projectForm);
       formContainer.appendChild(btnContainer);
 
+      /**
+       * Event listener for the submit button, creates a new project with the given name
+       * @param {Event} event - The submit event
+       */
       submit.addEventListener("click", (event) => {
         event.preventDefault();
         const projectName = projName.value.trim();
@@ -74,6 +131,7 @@ class Project {
               }
             });
             projList.appendChild(projBtn);
+            this.saveProject(projectName);
           }
 
           const projectButton = document.createElement("button");
@@ -81,9 +139,20 @@ class Project {
           projectButton.classList.add("projectBtn");
           projectButton.id = projectName;
 
-          const deleteProj = this.handler.createButton("X", "deleteBtn");
+          const deleteProj = document.createElement("button");
+          deleteProj.textContent = "X";
+          deleteProj.classList.add("deleteBtn");
+          deleteProj.id = `${projectName}-deleteBtn`;
 
-          deleteProj.addEventListener("click", () => {
+          /**
+           * Event listener for the delete project button, removes the project and its form from the DOM
+           * @param {Event} event - The delete project event
+           */
+          deleteProj.addEventListener("click", (event) => {
+            const projectId = deleteProj.id;
+            const projectName = projectId.replace("-deleteBtn", "");
+            const projBtn = document.getElementById(projectName);
+
             projBtn.remove();
 
             const todoFormContainer = document.getElementById(
@@ -95,6 +164,7 @@ class Project {
             }
 
             delete this.projects[projectName];
+            this.removeProject(projectName);
           });
 
           projBtn.appendChild(projectButton);
@@ -104,15 +174,24 @@ class Project {
         }
       });
 
+      /**
+       * Event listener for the cancel button, removes the project form from the DOM
+       * @param {Event} event - The cancel event
+       */
       cancel.addEventListener("click", (event) => {
         event.preventDefault();
         formContainer.remove();
       });
 
       project.appendChild(formContainer);
+      this.recreateProjectButton();
     }
   }
 
+  /**
+   * Show the project form for the given project name
+   * @param {string} projectName - The name of the project
+   */
   showProjectForm(projectName) {
     const allTodoForms = document.querySelectorAll(".projectTodoContainer");
     allTodoForms.forEach((form) => {
@@ -125,6 +204,9 @@ class Project {
     }
   }
 
+  /**
+   * Hides all the project forms
+   */
   hideProjectForm() {
     const allTodoForm = document.querySelectorAll(".projectTodoContainer");
     allTodoForm.forEach((form) => {
@@ -132,6 +214,10 @@ class Project {
     });
   }
 
+  /**
+   * Creates a new project form for the given project name
+   * @param {string} projectName - The name of the project
+   */
   createProjectTodoForm(projectName) {
     const projectContainer = document.querySelector(".projectContainer");
     const todoFormContainerId = `${projectName}-form`;
@@ -168,6 +254,7 @@ class Project {
       addBtn.id = `${projectName}-addBtn`;
       addBtn.addEventListener("click", (event) => {
         event.preventDefault();
+        this.reorderTodo();
         this.createProjectTodo(projectName);
         console.log(this.projects[projectName]);
       });
@@ -191,10 +278,28 @@ class Project {
     return todoFormContainer;
   }
 
+  /**
+   * Creates a new project todo with the given project name
+   * @param {string} projectName - The name of the project
+   */
   createProjectTodo(projectName) {
     const nameInput = document.querySelector(`#${projectName}-input`);
     const dateInput = document.querySelector(`#${projectName}-date-input`);
 
+    /**
+     * The project todo object
+     * @typedef {Object} ProjectTodo
+     * @property {number} id - The id of the todo
+     * @property {string} name - The name of the todo
+     * @property {string} proj - The name of the project
+     * @property {string} date - The date of the todo
+     */
+
+    /**
+     * Creates a new project todo object
+     * @param {string} projectName - The name of the project
+     * @returns {ProjectTodo} The project todo object
+     */
     const projectTodo = {
       id: this.projectIdCounter++,
       name: nameInput.value,
@@ -210,7 +315,6 @@ class Project {
     this.projects[projectName].sort((a, b) => {
       return new Date(a.date) - new Date(b.date);
     });
-    console.log(this.projects[projectName]);
 
     nameInput.value = "";
     dateInput.value = "";
@@ -230,8 +334,15 @@ class Project {
         "Item Container with ID ${projectName}-itemContainer not found"
       );
     }
+    this.saveProjectTodos();
+    return projectTodo;
   }
 
+  /**
+   * Creates a new project todo item with the given project name
+   * @param {Object} todo - The todo object
+   * @param {string} projectName - The name of the project
+   */
   createProjectTodoItem(todo, projectName) {
     const nameLabel = document.createElement("h5");
     const dateLabel = document.createElement("h5");
@@ -239,8 +350,22 @@ class Project {
     const todoItem = document.createElement("li");
     todoItem.classList.add(`todo-${todo.id}`, "todoItem");
 
+    /**
+     * Creates a new checkbox container for the given todo
+     * @param {Object} todo - The todo object
+     * @returns {HTMLDivElement} The checkbox container element
+     */
     const checkboxContainer = this.handler.createCheckboxContainer(todo);
+
+    /**
+     * The checkbox element within the container
+     * @type {HTMLInputElement}
+     */
     const checkbox = checkboxContainer.querySelector("input[type='checkbox']");
+
+    /**
+     * Event listener for the checkbox, removes the todo item if the checkbox is checked
+     */
     checkbox.addEventListener("change", () => {
       if (checkbox.checked) {
         setTimeout(() => {
@@ -252,7 +377,17 @@ class Project {
     nameLabel.textContent = todo.name;
     dateLabel.textContent = todo.date;
 
+    /**
+     * Creates a new priority icon for the given todo and todo item
+     * @param {Object} todo - The todo object
+     * @param {HTMLElement} todoItem - The todo item element
+     * @returns {HTMLElement} The priority icon element
+     */
     const priorityIcon = this.handler.createPriorityIcon(todo, todoItem);
+
+    /**
+     * Event listener for the priority icon, toggles the priority of the todo
+     */
     priorityIcon.addEventListener("click", () => {
       this.togglePriority(todo.id, projectName);
     });
@@ -267,10 +402,13 @@ class Project {
     );
 
     itemContainer.appendChild(todoItem);
-    console.log(itemContainer);
-    console.log(this.projects);
   }
 
+  /**
+   * Removes a todo item from the given project
+   * @param {number} todoId - The id of the todo item
+   * @param {string} projectName - The name of the project
+   */
   removeTodoItem(todoId, projectName) {
     const projectTodos = this.projects[projectName];
     if (projectTodos) {
@@ -278,10 +416,17 @@ class Project {
       if (index !== -1) {
         projectTodos.splice(index, 1);
         this.reorderTodo(projectName);
+        // Update local storage
+        this.saveProjectTodos();
       }
     }
   }
 
+  /**
+   * Toggles the priority of a todo with the given id in the given project
+   * @param {number} todoId - The id of the todo
+   * @param {string} projectName - The name of the project
+   */
   togglePriority(todoId, projectName) {
     const projectTodos = this.projects[projectName];
     if (projectTodos) {
@@ -289,11 +434,17 @@ class Project {
       if (todo) {
         todo.priority = !todo.priority;
         this.reorderTodo(projectName);
-        console.log("priority toggled");
+        // Update local storage
+        this.saveProjectTodos();
       }
     }
   }
 
+  /**
+   * Reorders the todo items in the given project based on their priority and date.
+   * If two todos have the same priority, the one with the earliest date is moved to the top.
+   * @param {string} projectName - The name of the project
+   */
   reorderTodo(projectName) {
     if (this.projects[projectName]) {
       this.projects[projectName].sort((a, b) => {
@@ -313,6 +464,116 @@ class Project {
         this.createProjectTodoItem(todo, projectName);
       });
     }
+  }
+
+  /**
+   * Saves the project data to local storage
+   */
+  saveProjectTodos() {
+    localStorage.setItem("projects", JSON.stringify(this.projects));
+  }
+
+  /**
+   * Removes a project from the project list
+   * @param {string} projectName - The name of the project to remove
+   */
+  removeProject(projectName) {
+    delete this.projects[projectName]; // Remove the project from the projects object
+    this.saveProjectTodos(); // Update local storage
+  }
+
+  /**
+   * Saves the project data to local storage
+   */
+  saveProjectsToLocalStorage() {
+    localStorage.setItem("projects", JSON.stringify(this.projects));
+  }
+
+  /**
+   * Saves a project to the list of projects
+   * @param {string} projectName - The name of the project to save
+   */
+  saveProject(projectName) {
+    let projects = JSON.parse(localStorage.getItem("projects"));
+    if (!Array.isArray(projects)) {
+      projects = [];
+    }
+    if (!projects.includes(projectName)) {
+      projects.push(projectName);
+      localStorage.setItem("projects", JSON.stringify(projects));
+    }
+  }
+
+  /**
+   * Creates a new project button and adds it to the DOM
+   */
+  recreateProjectButton() {
+    const projList = document.querySelector(".projectList");
+    let todoFormCreated = false;
+
+    const projectNames = Object.keys(this.projects);
+
+    // Clear existing project buttons
+    projList.innerHTML = "";
+
+    for (const projectName of projectNames) {
+      const projBtn = document.createElement("div");
+      projBtn.classList.add("projBtn");
+      projBtn.id = projectName;
+
+      projBtn.addEventListener("click", () => {
+        if (!todoFormCreated) {
+          this.showProjectForm(projectName);
+          this.createProjectTodoForm(projectName);
+          todoFormCreated = true;
+          console.log("project btn clicked");
+        } else {
+          this.hideProjectForm();
+          this.showProjectForm(projectName);
+        }
+      });
+
+      projList.appendChild(projBtn);
+
+      const projectButton = document.createElement("button");
+      projectButton.textContent = projectName;
+      projectButton.classList.add("projectBtn");
+      projectButton.id = projectName;
+
+      const deleteProj = this.handler.createButton("X", "deleteBtn");
+
+      deleteProj.addEventListener("click", () => {
+        projBtn.remove();
+
+        const todoFormContainer = document.getElementById(
+          `${projectName}-form`
+        );
+
+        if (todoFormContainer) {
+          todoFormContainer.remove();
+        }
+
+        delete this.projects[projectName];
+        // Remove project name from localStorage
+        this.removeProject(projectName);
+      });
+
+      projBtn.appendChild(projectButton);
+      projBtn.appendChild(deleteProj);
+    }
+
+    return true;
+  }
+
+  /**
+   * Exports the project data as an array of objects, where each object represents a project and contains an array of todos for that project
+   * @returns {Object[]} An array of objects, where each object represents a project and contains an array of todos for that project
+   */
+  exportProjects() {
+    return Object.keys(this.projects).map((projectName) => ({
+      name: projectName,
+      todos: this.projects[projectName],
+    }));
   }
 }
 
