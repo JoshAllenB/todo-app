@@ -1,12 +1,14 @@
 import Handler from "./handler";
 import Todo from "./todo";
 import Project from "./project";
+import Filter from "./filter";
 
 class Website {
   constructor() {
     this.todo = new Todo();
     this.handler = new Handler();
     this.project = new Project();
+    this.filter = new Filter();
     this.formCreated = false;
     this.currentPage = "";
     this.currentVisibleContainer = null;
@@ -53,7 +55,6 @@ class Website {
     }
     container.classList.remove("hidden");
     this.currentVisibleContainer = container;
-
   }
 
   activeButton(button) {
@@ -79,6 +80,11 @@ class Website {
 
     const inboxBtn = this.handler.createButton("Inbox", "inbox");
     inboxBtn.addEventListener("click", (event) => {
+      if (!this.todo) {
+        console.error("todo object is not instantiated.");
+        return;
+      }
+
       const inbox = document.querySelector(".inboxContainer");
       this.showContainer(inbox);
       this.activeButton(event.currentTarget);
@@ -91,20 +97,75 @@ class Website {
 
         this.formCreated = true;
       }
+
+      this.todo.renderTodoList();
     });
 
     const todayBtn = this.handler.createButton("Today", "today");
     todayBtn.addEventListener("click", (event) => {
-      const today = document.querySelector(".todayContainer");
-      this.showContainer(today);
+      if (event.currentTarget.classList.contains("active")) {
+        return;
+      }
+
+      const todoListData = JSON.parse(localStorage.getItem("todoList")) || [];
+      const projectsData = JSON.parse(localStorage.getItem("projects")) || {};
+      console.log("todoListData in todayBtn:", todoListData);
+      console.log("projectsData in todayBtn:", projectsData);
+
+      const todayContainer = document.querySelector(".todayContainer");
+      this.showContainer(todayContainer);
       this.activeButton(event.currentTarget);
+
+      let todoContainer = document.querySelector(".todoContainer.today");
+      if (!todoContainer) {
+        todoContainer = this.handler.createTodoContainer();
+        todoContainer.classList.add("today"); // Add a class to identify the container
+        todayContainer.appendChild(todoContainer);
+      }
+
+      todoContainer.innerHTML = "";
+
+      const todoDueToday = this.filter.filterDueToday(todoListData);
+      const projectDueToday = this.filter.filterProjectsDueToday(projectsData);
+      const dueTodayItems = [...todoDueToday, ...projectDueToday];
+
+      todoContainer.innerHTML = "";
+      this.filter.renderFilteredTodoList(dueTodayItems, todoContainer);
     });
 
     const weekBtn = this.handler.createButton("This Week", "thisWeek");
     weekBtn.addEventListener("click", (event) => {
-      const week = document.querySelector(".weekContainer");
-      this.showContainer(week);
+      if (event.currentTarget.classList.contains("active")) {
+        return;
+      }
+
+      const todoListData = JSON.parse(localStorage.getItem("todoList")) || [];
+      const projectsData = JSON.parse(localStorage.getItem("projects")) || {};
+      console.log("todoListData in weekBtn:", todoListData);
+      console.log("projectsData in weekBtn:", projectsData);
+
+      const weekContainer = document.querySelector(".weekContainer");
+      console.log("week container:", weekContainer);
+      this.showContainer(weekContainer);
       this.activeButton(event.currentTarget);
+
+      let todoContainer = document.querySelector(".todoContainer.week");
+      console.log("existing todo container", todoContainer);
+      if (!todoContainer) {
+        todoContainer = this.handler.createTodoContainer();
+        todoContainer.classList.add("week");
+        weekContainer.appendChild(todoContainer);
+      }
+
+      const todoDueThisWeek = this.filter.filterDueThisWeek(todoListData);
+      const projectDueThisWeek =
+        this.filter.filteredProjectsDueThisWeek(projectsData);
+      const dueThisWeekItems = [...todoDueThisWeek, ...projectDueThisWeek];
+      console.log("due this week", dueThisWeekItems);
+
+      console.log("todoContainer", todoContainer);
+      todoContainer.innerHTML = "";
+      this.filter.renderFilteredTodoList(dueThisWeekItems, todoContainer);
     });
 
     const project = document.createElement("div");
@@ -145,6 +206,8 @@ class Website {
     this.showContainer(firstContainer, "hidden");
 
     content.insertBefore(sideMenu, content.firstChild);
+
+    this.project.recreateProjectButton();
   }
 
   createFooter() {
